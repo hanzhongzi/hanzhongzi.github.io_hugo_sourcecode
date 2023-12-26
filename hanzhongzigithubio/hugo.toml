@@ -1,0 +1,8 @@
+baseURL = 'https://hanzhongzi.github.io/'
+languageCode = 'en-us'
+theme = "kagome"
+title = '瀚中子的个人网站'
+
+[taxonomies]
+  category = 'categories'
+  tag= 'tags'
