@@ -1,7 +1,9 @@
 +++
-title = 'Ansible'
+title = 'Ansible 一片文章全搞定'
 date = 2019-07-17T23:02:42+08:00
 draft = false
+categories = ['专业技能']
+tags = ['Anisble']
 +++
 
 # Ansible 

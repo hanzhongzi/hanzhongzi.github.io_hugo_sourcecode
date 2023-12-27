@@ -15,5 +15,12 @@
       <guid>https://hanzhongzi.github.io/posts/hugo_first/</guid>
       <description>云主机忘记续费回收了,,,看来还是免费的香。。。</description>
     </item>
+    <item>
+      <title>Ansible 一片文章全搞定</title>
+      <link>https://hanzhongzi.github.io/posts/ansible/</link>
+      <pubDate>Wed, 17 Jul 2019 23:02:42 +0800</pubDate>
+      <guid>https://hanzhongzi.github.io/posts/ansible/</guid>
+      <description>Ansible 一篇搞定，快速学习&#xA;一、特点 模块化： 调用特定的模块，完成特定的内容 使用 Paramiko(Python对于ssh的实现)，PyYAML,Jinja2(模板语言) 三个关键模块 支持自定义模块，可以使用任何语言编写 基于Python实现 不是简单，基于Python和SSH,无agent，无需代理，不依赖PKI(无需SSL) 安全，基于OpenSSH 幂等性：一个任务执行一遍和N边结果是一样的（要注意代码逻辑） 支持playbook编排任务，YAML格式，编排任务，支持丰富的数据机构 较强大的role的多层解决方案 二、架构 用户/PLAYBOOK =&amp;gt; INVENTORY/API/MODULES/PLUGINS =&amp;gt; HOSTS/NETWORK INVEMTORY: Ansible管理主机的清单 /etc/ansible/hosts MODULES: Ansible执行命令的功能模块、多数为内置核心模块，也可以自定义 PLUGINS: 模块功能的补充，如连接类型插件、循环插件、变量插件、过滤插件等 API: 供第三方程序调用的应用程序接口 用户直接使用命令或者使用 Playbook 或者 调用API 去远程主机执行命令 三、注意事项 执行ansible的主机一般称为主控端，中控，master或堡垒机 主控段python需要在2.6或以上 被控端python版本小鱼2.4的需要安装 python-simplejson windows不能作为主控 四、安装 epel源rpm包安装 sudo yum -y install epel-release &amp;amp;&amp;amp; sudo yum -y install ansible&#xA;官方其他安装方式&#xA;查看安装版本和命令&#xA;ansible --version ansible 2.9.27 config file = /etc/ansible/ansible.cfg configured module search path = [u&amp;#39;/root/.ansible/plugins/modules&amp;#39;, u&amp;#39;/usr/share/ansible/plugins/modules&amp;#39;] ansible python module location = /usr/lib/python2.</description>
+    </item>
   </channel>
 </rss>

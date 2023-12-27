@@ -1,0 +1,1565 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>Ansible 一片文章全搞定</title>
+<meta name="viewport"content="width=device-width, user-scalable=no, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
+
+<meta name="description" content="Ansible 一篇搞定，快速学习
+一、特点 模块化： 调用特定的模块，完成特定的内容 使用 Paramiko(Python对于ssh的实现)，PyYAML,Jinja2(模板语言) 三个关键模块 支持自定义模块，可以使用任何语言编写 基于Python实现 不是简单，基于Python和SSH,无agent，无需代理，不依赖PKI(无需SSL) 安全，基于OpenSSH 幂等性：一个任务执行一遍和N边结果是一样的（要注意代码逻辑） 支持playbook编排任务，YAML格式，编排任务，支持丰富的数据机构 较强大的role的多层解决方案 二、架构 用户/PLAYBOOK =&gt; INVENTORY/API/MODULES/PLUGINS =&gt; HOSTS/NETWORK INVEMTORY: Ansible管理主机的清单 /etc/ansible/hosts MODULES: Ansible执行命令的功能模块、多数为内置核心模块，也可以自定义 PLUGINS: 模块功能的补充，如连接类型插件、循环插件、变量插件、过滤插件等 API: 供第三方程序调用的应用程序接口 用户直接使用命令或者使用 Playbook 或者 调用API 去远程主机执行命令 三、注意事项 执行ansible的主机一般称为主控端，中控，master或堡垒机 主控段python需要在2.6或以上 被控端python版本小鱼2.4的需要安装 python-simplejson windows不能作为主控 四、安装 epel源rpm包安装 sudo yum -y install epel-release &amp;&amp; sudo yum -y install ansible
+官方其他安装方式
+查看安装版本和命令
+ansible --version ansible 2.9.27 config file = /etc/ansible/ansible.cfg configured module search path = [u&#39;/root/.ansible/plugins/modules&#39;, u&#39;/usr/share/ansible/plugins/modules&#39;] ansible python module location = /usr/lib/python2.">
+
+<meta itemprop="name" content="Ansible 一片文章全搞定">
+<meta itemprop="description" content="Ansible 一篇搞定，快速学习
+一、特点 模块化： 调用特定的模块，完成特定的内容 使用 Paramiko(Python对于ssh的实现)，PyYAML,Jinja2(模板语言) 三个关键模块 支持自定义模块，可以使用任何语言编写 基于Python实现 不是简单，基于Python和SSH,无agent，无需代理，不依赖PKI(无需SSL) 安全，基于OpenSSH 幂等性：一个任务执行一遍和N边结果是一样的（要注意代码逻辑） 支持playbook编排任务，YAML格式，编排任务，支持丰富的数据机构 较强大的role的多层解决方案 二、架构 用户/PLAYBOOK =&gt; INVENTORY/API/MODULES/PLUGINS =&gt; HOSTS/NETWORK INVEMTORY: Ansible管理主机的清单 /etc/ansible/hosts MODULES: Ansible执行命令的功能模块、多数为内置核心模块，也可以自定义 PLUGINS: 模块功能的补充，如连接类型插件、循环插件、变量插件、过滤插件等 API: 供第三方程序调用的应用程序接口 用户直接使用命令或者使用 Playbook 或者 调用API 去远程主机执行命令 三、注意事项 执行ansible的主机一般称为主控端，中控，master或堡垒机 主控段python需要在2.6或以上 被控端python版本小鱼2.4的需要安装 python-simplejson windows不能作为主控 四、安装 epel源rpm包安装 sudo yum -y install epel-release &amp;&amp; sudo yum -y install ansible
+官方其他安装方式
+查看安装版本和命令
+ansible --version ansible 2.9.27 config file = /etc/ansible/ansible.cfg configured module search path = [u&#39;/root/.ansible/plugins/modules&#39;, u&#39;/usr/share/ansible/plugins/modules&#39;] ansible python module location = /usr/lib/python2.">
+<meta itemprop="image" content="https://hanzhongzi.github.io/img/author.jpg">
+
+
+<meta name="twitter:description" content="">
+
+
+<link rel="alternate" href="https://hanzhongzi.github.io/feed.xml" title="瀚中子的个人网站" type="application/rss+xml"/>
+
+<link rel="shortcut icon" href="https://hanzhongzi.github.io/imgs/icons/favicon.ico"/>
+<link rel="apple-touch-icon" href="https://hanzhongzi.github.io/imgs/icons/apple-touch-icon.png" />
+<link rel="apple-touch-icon-precomposed" href="https://hanzhongzi.github.io/imgs/icons/apple-touch-icon.png" />
+
+
+
+
+<style>
+    @font-face {
+        font-family: 'Xc Font';
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+        src: url('https://cdn.jsdelivr.net/gh/Xpblog666/cdn@1.0/HarmonyOS_Sans_SC_Medium.ttf');
+        src: url('https://cdn.jsdelivr.net/gh/Xpblog666/cdn@1.0/HarmonyOS_Sans_SC_Medium.ttf') format('truetype');
+    }
+
+    html {
+        font-family: 'Xc Font', 'PingFang SC', 'Noto Serif SC', 'HarmonyOS_Sans_SC_Medium', 'Fira Mono', 'Microsoft YaHei', Arial, sans-serif
+    }
+
+    html .Qc_header_above .Qc_container {
+        max-width: 1720px
+    }
+
+    html .Qc_header_below .Qc_container {
+        max-width: 1720px
+    }
+
+    html .Qc_header_searchout .Qc_container {
+        max-width: 1720px
+    }
+
+    html .Qc_main {
+        max-width: 980px
+    }
+
+    html .Qc_aside {
+        width: 260px
+    }
+
+    body::before {
+        background: #f0f0f0;
+        background: ;
+        background-position: center 0;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+
+
+<link rel="stylesheet" href="https://hanzhongzi.github.io/css/global.min.css" />
+<link rel="stylesheet" href="https://hanzhongzi.github.io/css/style.css" />
+<link rel="stylesheet" href="https://hanzhongzi.github.io/css/theme.min.css" />
+
+<link rel="stylesheet" href="https://hanzhongzi.github.io/css/font-awesome.min.css" />
+
+
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css" />
+
+
+
+<script type="module">
+    import { init } from 'https://unpkg.com/@waline/client@v2/dist/waline.mjs';
+  
+    init({
+      el: '.waline-container',
+      placeholder: "请不要吝啬您的评论 ヾ(≧▽≦*)o",
+      sofa: "瞧，这里没人，还不抢占第一的位置 (≧∀≦)ゞ",
+      pageview: true, 
+      comment: true, 
+      emoji: [
+        '//unpkg.com/@waline/emojis@1.1.0/weibo',
+        '//unpkg.com/@waline/emojis@1.1.0/bilibili',
+      ],
+      login: 'disable',
+      imgUploader: false,
+      wordLimit: 200,
+      requiredMeta: ['nick', 'mail'],
+      reaction: true,
+      reactionText: [ '点赞', '踩一下', '得意', '不屑', '尴尬', '睡觉'],
+      reactionTitle: "您认为这篇文章怎么样？",
+      dark: 'auto', 
+      serverURL: "comment.qiucode.cn",
+    });
+  </script>
+  
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+
+                
+ 
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+	<header class="Qc_header  active Qc_slid">
+<div class="Qc_header_above">
+    <div class="Qc_container"> 
+        <svg class="Qc_header_above-slideicon" viewBox="0 0 1152 1024"
+            xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+            <path
+                d="M76.032 872a59.968 59.968 0 1 0 0 120h999.936a59.968 59.968 0 1 0 0-120H76.032zm16-420.032a59.968 59.968 0 1 0 0 120h599.936a59.968 59.968 0 1 0 0-119.936H92.032zM76.032 32a59.968 59.968 0 1 0 0 120h999.936a60.032 60.032 0 0 0 0-120H76.032z" />
+        </svg> 
+        <a class="Qc_header_above-logo" href="/" title="John'Blog"> 
+            <img class="Qc_logo"
+                src="/static/front/images/qiu-logo.png" /></a>
+        <nav class="Qc_header_above_nav"> 
+            
+            <a class="item " href="/" title="首页" style="margin-right:8px">
+                <i class="fa fa-home"></i> 首页
+            </a>
+           
+            <a class="item " href="/flinks" title="友情链接">
+                <i class="fa fa-link"></i>友情链接
+            </a> 
+
+
+            <a class="item " href="/about" title="关于我">
+                <i class="fa fa-user"></i>关于本站
+            </a>
+        </nav> 
+
+        
+        
+        <svg class="Qc_header_above-searchicon" viewBox="0 0 1024 1024"
+            xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="display: block;">
+            <path
+                d="M1008.19 932.031L771.72 695.56a431.153 431.153 0 1 0-76.158 76.158l236.408 236.472a53.758 53.758 0 0 0 76.158 0 53.758 53.758 0 0 0 0-76.158zM107.807 431.185a323.637 323.637 0 0 1 323.316-323.381 323.7 323.7 0 0 1 323.381 323.38 323.637 323.637 0 0 1-323.38 323.317 323.637 323.637 0 0 1-323.317-323.316z" />
+        </svg> 
+        <a href="javascript:void(0)" type="button" id="ClickMe" style="margin: 0px 3px 2px 13px"><svg
+                t="1675873194952" class="loingico" viewBox="0 0 1024 1024" version="1.1"
+                xmlns="http://www.w3.org/2000/svg" p-id="3929" width="22" height="22">
+                <path
+                    d="M554.666667 349.44a48.213333 48.213333 0 1 1-47.786667 47.786667A48.213333 48.213333 0 0 1 554.666667 349.44m0-85.333333a133.546667 133.546667 0 1 0 133.546666 133.12A133.12 133.12 0 0 0 554.666667 264.106667z"
+                    fill="var(--routine)" p-id="3930"></path>
+                <path
+                    d="M768 759.893333a42.666667 42.666667 0 0 1-42.666667-42.666666 170.666667 170.666667 0 0 0-341.333333 0 42.666667 42.666667 0 0 1-85.333333 0 256 256 0 0 1 512 0 42.666667 42.666667 0 0 1-42.666667 42.666666z"
+                    fill="var(--routine)" p-id="3931"></path>
+                <path
+                    d="M554.666667 213.333333a341.333333 341.333333 0 1 1-341.333334 341.333334 341.333333 341.333333 0 0 1 341.333334-341.333334m0-85.333333a426.666667 426.666667 0 1 0 426.666666 426.666667A426.666667 426.666667 0 0 0 554.666667 128z"
+                    fill="var(--routine)" p-id="3932"></path>
+            </svg> </a>
+       
+    </div>
+</div>
+
+<div class="Qc_header_slideout"> 
+    <img width="100%" height="150" class="Qc_header_slideout-image"
+        src="https://qiucode.cn/shaonv.jpg" alt="侧边栏壁纸" />
+    <div class="Qc_header_slideout-author"> <img width="50" height="50" class="avatar"
+            src="https://thirdqq.qlogo.cn/g?b=qq&nk=687778&s=100" alt="博主昵称" />
+        <div class="info"> <a class="link" href="https://qiucode.cn" target="_blank"
+                rel="noopener noreferrer nofollow">John</a>
+            <p class="motto Qc_motto"></p>
+        </div>
+    </div>
+    <ul class="Qc_header_slideout-count"> </ul>
+    <ul class="Qc_header_slideout-menu panel-box">
+        <li> <a class="link" href="https://qiucode.cn/" title="首页"> <span><i class="iconfont icon-A131"></i>
+                    首页</span> </a> </li>
+        <li> <a class="link panel" href="#" rel="nofollow"> <span><i class="iconfont icon-A129"></i> 分类</span>
+                <svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="13"
+                    height="13">
+                    <path
+                        d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z" />
+                </svg> </a>
+            <ul class="slides panel-body panel-box">
+                <li>
+                    <div class="link panel "> <a href="https://qiucode.cn/category/default/" title="日常分享">日常分享</a>
+                        <svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="13"
+                            height="13">
+                            <path
+                                d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z" />
+                        </svg> </div>
+                    <ul class="slides panel-body">
+                        <li><a class="link " href="https://qiucode.cn/category/wmfx/" title="外贸分享">外贸分享</a></li>
+                        <li><a class="link " href="https://qiucode.cn/category/wztj/" title="网站推荐">网站推荐</a></li>
+                        <li><a class="link " href="https://qiucode.cn/category/yxxg/" title="游戏相关">游戏相关</a></li>
+                    </ul>
+                </li>
+                <li><a class="link " href="https://qiucode.cn/category/xitong/" title="系统相关">系统相关</a></li>
+                <li>
+                    <div class="link panel "> <a href="https://qiucode.cn/category/wangzhan/"
+                            title="网站文档">网站文档</a> <svg class="icon" viewBox="0 0 1024 1024"
+                            xmlns="http://www.w3.org/2000/svg" width="13" height="13">
+                            <path
+                                d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z" />
+                        </svg> </div>
+                    <ul class="slides panel-body">
+                        <li><a class="link " href="https://qiucode.cn/category/bkfx/" title="博客分享">博客分享</a></li>
+                        <li><a class="link " href="https://qiucode.cn/category/wzym/" title="网站源码">网站源码</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="link panel "> <a href="https://qiucode.cn/category/ruanjian/"
+                            title="软件分享">软件分享</a> <svg class="icon" viewBox="0 0 1024 1024"
+                            xmlns="http://www.w3.org/2000/svg" width="13" height="13">
+                            <path
+                                d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z" />
+                        </svg> </div>
+                    <ul class="slides panel-body">
+                        <li><a class="link " href="https://qiucode.cn/category/sjrj/" title="📱手机软件">📱手机软件</a>
+                        </li>
+                        <li><a class="link " href="https://qiucode.cn/category/dnrj/" title="💻电脑软件">💻电脑软件</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li> <a class="link panel" href="#" rel="nofollow"> <span><i class="iconfont icon-A3"></i> 页面</span>
+                <svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="13"
+                    height="13">
+                    <path
+                        d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z" />
+                </svg> </a>
+            <ul class="slides panel-body">
+                <li><a class="link " href="https://qiucode.cn/sn.html" title="我的记录">我的记录</a></li>
+                <li><a class="link " href="https://qiucode.cn/youlian.html" title="友情链接">友情链接</a></li>
+                <li><a class="link " href="https://qiucode.cn/site.html" title="站点统计">站点统计</a></li>
+                <li><a class="link " href="https://qiucode.cn/Aboutme.html" title="关于我">关于我</a></li>
+            </ul>
+        </li>
+    </ul>
+    <ul class="Qc_header_slideout-menu panel-box" style="margin-top: 15px;margin-bottom: 100px;">
+        <li> <a class="link panel" href="#" rel="nofollow"> <span><i class="iconfont icon-A17"></i> 用户登录</span>
+                <svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="13"
+                    height="13">
+                    <path
+                        d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z">
+                    </path>
+                </svg> </a>
+            <ul class="slides panel-body">
+                <li> <a class="link" href="https://qiucode.cn/admin/login.php" target="_blank"
+                        rel="noopener noreferrer nofollow">登录</a> <a class="link"
+                        href="https://qiucode.cn/admin/register.php" target="_blank"
+                        rel="noopener noreferrer nofollow">注册</a> </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<div class="Qc_header_mask"></div>
+
+<script>
+
+    let sideBtn = document.querySelector(".Qc_header_above .Qc_container .Qc_header_above-slideicon")
+
+    sideBtn.addEventListener("click", () => {
+        document.querySelector(".Qc_header_slideout").classList.add("active")
+        document.querySelector(".Qc_header_mask").classList.add("active")
+    })
+
+    let maskBtn = document.querySelector(".Qc_header_mask")
+
+    maskBtn.addEventListener("click",() => {
+        document.querySelector(".Qc_header_slideout").classList.remove("active")
+        maskBtn.classList.remove("active")
+    })
+
+   
+    
+
+</script></header>
+	
+	<div class="Qc_container showInUp">
+
+
+
+<div class="Qc_main Qc_post">
+    <div class="Qc_detail">
+        <h1 class="title Qc_psot_title"> Ansible 一片文章全搞定</h1>
+        <div class="Qc_bread">
+            <ul class="Qc_bread_bread">
+                <li class="item"> <span class="iconfont icon-A131" style="margin-right: 4px;"></span> <a
+                        href="https://qiucode.cn/" class="link" title="首页">首页</a> </li>
+                <li class="line">/</li>
+                <li class="item"> <a class="link" href="https://qiucode.cn/category/bkfx/" title="博客分享">博客分享</a>
+                </li>
+                <li class="line">/</li>
+                <li class="item">正文</li>
+            </ul>
+        </div>
+        <div class="Qc_detail_category"> </div>
+        <article class="Qc_detail_article" id="article-container">
+            <h1 id="ansible">Ansible</h1>
+<p>一篇搞定，快速学习</p>
+<hr>
+<h2 id="一特点">一、特点</h2>
+<ul>
+<li>模块化： 调用特定的模块，完成特定的内容</li>
+<li>使用 Paramiko(Python对于ssh的实现)，PyYAML,Jinja2(模板语言) 三个关键模块</li>
+<li>支持自定义模块，可以使用任何语言编写</li>
+<li>基于Python实现</li>
+<li>不是简单，基于Python和SSH,无agent，无需代理，不依赖PKI(无需SSL)</li>
+<li>安全，基于OpenSSH</li>
+<li>幂等性：一个任务执行一遍和N边结果是一样的（要注意代码逻辑）</li>
+<li>支持playbook编排任务，YAML格式，编排任务，支持丰富的数据机构</li>
+<li>较强大的role的多层解决方案</li>
+</ul>
+<hr>
+<h2 id="二架构">二、架构</h2>
+<pre tabindex="0"><code>用户/PLAYBOOK =&gt; INVENTORY/API/MODULES/PLUGINS =&gt; HOSTS/NETWORK
+INVEMTORY: Ansible管理主机的清单 /etc/ansible/hosts
+MODULES: Ansible执行命令的功能模块、多数为内置核心模块，也可以自定义
+PLUGINS: 模块功能的补充，如连接类型插件、循环插件、变量插件、过滤插件等
+API: 供第三方程序调用的应用程序接口
+</code></pre><h2 id="用户直接使用命令或者使用-playbook-或者-调用api-去远程主机执行命令">用户直接使用命令或者使用 Playbook 或者 调用API 去远程主机执行命令</h2>
+<h2 id="三注意事项">三、注意事项</h2>
+<ul>
+<li>执行ansible的主机一般称为主控端，中控，master或堡垒机</li>
+<li>主控段python需要在2.6或以上</li>
+<li>被控端python版本小鱼2.4的需要安装 python-simplejson</li>
+<li>windows不能作为主控</li>
+</ul>
+<hr>
+<h2 id="四安装">四、安装</h2>
+<ul>
+<li>epel源rpm包安装</li>
+</ul>
+<p><code>sudo yum -y install epel-release &amp;&amp; sudo yum -y install ansible</code></p>
+<ul>
+<li>
+<p><a href="https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html">官方其他安装方式</a></p>
+</li>
+<li>
+<p>查看安装版本和命令</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ansible --version
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ansible 2.9.27
+</span></span><span style="display:flex;"><span>  config file = /etc/ansible/ansible.cfg
+</span></span><span style="display:flex;"><span>  configured module search path = [u&#39;/root/.ansible/plugins/modules&#39;, u&#39;/usr/share/ansible/plugins/modules&#39;]
+</span></span><span style="display:flex;"><span>  ansible python module location = /usr/lib/python2.7/site-packages/ansible
+</span></span><span style="display:flex;"><span>  executable location = /usr/bin/ansible
+</span></span><span style="display:flex;"><span>  python version = 2.7.5 (default, Nov 16 2020, 22:23:17) [GCC 4.8.5 20150623 (Red Hat 4.8.5-44)]
+</span></span></code></pre></div><p><code>rpm -ql ansible</code> 可以查看ansible都下载了哪些文件。
+也可以在终端输入ansible 后<!-- raw HTML omitted -->Tab<!-- raw HTML omitted --> 键查看输出的命令</p>
+<hr>
+<h2 id="五基本使用">五、基本使用</h2>
+<h3 id="准备机器">准备机器</h3>
+<table>
+<thead>
+<tr>
+<th>节点名称</th>
+<th>节点IP</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k8s-master-001</td>
+<td>10.241.12.3</td>
+<td>Ansible-Server</td>
+</tr>
+<tr>
+<td>k8s-master-003</td>
+<td>10.241.12.1</td>
+<td>被控制端</td>
+</tr>
+<tr>
+<td>k8s-master-002</td>
+<td>10.241.12.2</td>
+<td>被控制端</td>
+</tr>
+<tr>
+<td>k8s-node-003</td>
+<td>10.241.12.9</td>
+<td>被控制端</td>
+</tr>
+<tr>
+<td>k8s-node-001</td>
+<td>10.241.12.12</td>
+<td>被控制端</td>
+</tr>
+</tbody>
+</table>
+<h3 id="anisble管理主机的方式">anisble管理主机的方式</h3>
+<ul>
+<li>Ad-HC 即利用ansible命令，主要用于临时命令场景</li>
+<li>Ansible-playbook 主要用于长期规划好的，大型项目的使用，需要有前期的规划过程。</li>
+</ul>
+<h3 id="配置文件">配置文件</h3>
+<ul>
+<li>/etc/ansible/ansible.cfg #主配置文件，配置ansible工作
+<pre tabindex="0"><code>[defaults]
+inventory = /etc/ansible/hosts #主机列表
+library = /usr/share/my_modules #库文件存放目录
+remote_tmp = $HOME/.ansible/tmp #临时 py 命令文件存放在远程主机目录
+local_tmp = $HOME/.ansible/tmp #本机的临时命令执行目录
+forks = 5 #默认并发数量
+sudo_user = root #默认sudo用户
+ask_sudo_pass = True #每次执行ansible 命令是否询问ssh密码
+ask_pass = True
+remote_port =22
+host_key_checking = False #检查对应服务器的host_key, 建议取消注释
+log_path = /var/log/ansible.log #日志文件 建议启用
+module_name = command #默认模块，可以修改为shell模块 
+</code></pre></li>
+<li>/etc/ansible/hosts #主机清单
+为了批量快捷的管理部分主机
+<pre tabindex="0"><code>#举例子
+#[标签名]
+#ip1
+#ip2
+#ip3:222
+#将下面的配置写入 /etc/ansible/hosts
+[k8s-master]
+#k8s-master-003
+10.241.12.1
+#k8s-master-002
+10.241.12.2
+[k8s-slave]
+#k8s-node-003
+10.241.12.9
+#k8s-node-001
+10.241.12.12
+</code></pre></li>
+<li>/etc/ansible/role #存放角色</li>
+</ul>
+<h3 id="ansible-doc-命令文档">ansible-doc 命令文档</h3>
+<p>此命令用来显示模块的帮助文档
+格式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ansible-doc [OPTION] [MODULE...]
+</span></span><span style="display:flex;"><span>-l , --list #列出可用模块
+</span></span><span style="display:flex;"><span>-s , --snippet #显示指定模块的playbook片段
+</span></span><span style="display:flex;"><span>例子
+</span></span><span style="display:flex;"><span>ansible-doc -s ping
+</span></span></code></pre></div><h3 id="ansible-命令">ansible 命令</h3>
+<p>使用SSH协议实现对远程主机的配置。 所以主控端需要能基于密钥认证的方式联系哥哥被管理节点</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#例如使用sshpass批量实现key的验证</span>
+</span></span><span style="display:flex;"><span>ssh-keygen -f /root/.ssh/id_rsa -P <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>NET<span style="color:#f92672">=</span> 192.168.100
+</span></span><span style="display:flex;"><span>export SSHPASS<span style="color:#f92672">=</span>xxxx
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> IP in <span style="color:#f92672">{</span>1..200<span style="color:#f92672">}</span>;<span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  sshpass -e ssh-copy-id $NET.$IP
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span></code></pre></div><h4 id="格式">格式</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ansible &lt;host_pattern&gt; <span style="color:#f92672">[</span> -m module_name<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>-a args<span style="color:#f92672">]</span>
+</span></span></code></pre></div><h4 id="重要选项说明">重要选项说明</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>--version #显示版本
+</span></span><span style="display:flex;"><span>-m moudle #指定模块，默认为command
+</span></span><span style="display:flex;"><span>-v #详细过程 -vv -vvv 更加详细
+</span></span><span style="display:flex;"><span>--list-hosts #列出主机列表
+</span></span><span style="display:flex;"><span>-k, --ask-pass #提示输入ssh连接密码，默认key验证
+</span></span><span style="display:flex;"><span>-C, --check #检查，并不执行
+</span></span><span style="display:flex;"><span>-T, --timeout=TIMEOUT #执行远程命令的用户,默认10S
+</span></span><span style="display:flex;"><span>-u，--user=PEMOTE_USER #执行园长执行的用户
+</span></span><span style="display:flex;"><span>-b, --become #代替旧版的sudo 切换
+</span></span><span style="display:flex;"><span>--beconme-user=USERNAME #指定sudo的runas用户，默认为root
+</span></span><span style="display:flex;"><span>-K, --ask-becomne-pass #提示输入sudo时的口令
+</span></span></code></pre></div><p>举例使用ping模块</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span># ansible all -m ping 或者  ansible k8s-master#这里指定了hosts里写的标签组 -m ping
+</span></span><span style="display:flex;"><span>[WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details
+</span></span><span style="display:flex;"><span>10.241.12.1 | SUCCESS =&gt; {
+</span></span><span style="display:flex;"><span>    &#34;ansible_facts&#34;: {
+</span></span><span style="display:flex;"><span>        &#34;discovered_interpreter_python&#34;: &#34;/usr/bin/python&#34;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    &#34;changed&#34;: false,
+</span></span><span style="display:flex;"><span>    &#34;ping&#34;: &#34;pong&#34;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>10.241.12.12 | SUCCESS =&gt; {
+</span></span><span style="display:flex;"><span>    &#34;ansible_facts&#34;: {
+</span></span><span style="display:flex;"><span>        &#34;discovered_interpreter_python&#34;: &#34;/usr/bin/python&#34;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    &#34;changed&#34;: false,
+</span></span><span style="display:flex;"><span>    &#34;ping&#34;: &#34;pong&#34;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>10.241.12.2 | SUCCESS =&gt; {
+</span></span><span style="display:flex;"><span>    &#34;ansible_facts&#34;: {
+</span></span><span style="display:flex;"><span>        &#34;discovered_interpreter_python&#34;: &#34;/usr/bin/python&#34;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    &#34;changed&#34;: false,
+</span></span><span style="display:flex;"><span>    &#34;ping&#34;: &#34;pong&#34;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>10.241.12.9 | SUCCESS =&gt; {
+</span></span><span style="display:flex;"><span>    &#34;ansible_facts&#34;: {
+</span></span><span style="display:flex;"><span>        &#34;discovered_interpreter_python&#34;: &#34;/usr/bin/python&#34;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    &#34;changed&#34;: false,
+</span></span><span style="display:flex;"><span>    &#34;ping&#34;: &#34;pong&#34;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如果没有验证通过，需要 -k 来输入密码，很麻烦。所以建议使用秘钥。</p>
+<h3 id="选择特定主机">选择特定主机</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>[root@k8s-master-001 ~]# ansible all --list-hosts
+</span></span><span style="display:flex;"><span>[WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details
+</span></span><span style="display:flex;"><span>  hosts (4):
+</span></span><span style="display:flex;"><span>    10.241.12.9
+</span></span><span style="display:flex;"><span>    10.241.12.12
+</span></span><span style="display:flex;"><span>    10.241.12.1
+</span></span><span style="display:flex;"><span>    10.241.12.2
+</span></span><span style="display:flex;"><span>#或者指定标签组
+</span></span><span style="display:flex;"><span>[root@k8s-master-001 ~]# ansible k8s-master --list-hosts
+</span></span><span style="display:flex;"><span>[WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details
+</span></span><span style="display:flex;"><span>  hosts (2):
+</span></span><span style="display:flex;"><span>    10.241.12.1
+</span></span><span style="display:flex;"><span>    10.241.12.2
+</span></span></code></pre></div><p>使用通配符指定主机</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ansible &#39;*&#39; --list-hosts
+</span></span><span style="display:flex;"><span>ansible 10.241.* --list-hosts
+</span></span><span style="display:flex;"><span>ansible 10.241.12.1:10.241.12.2 --list-hosts #俩个机器中的一个 ，或者关系
+</span></span><span style="display:flex;"><span>ansible &#39;k8s-master:&amp;k8s-node&#39; --list-hosts #与的关系，在k8s-master标签组里也在k8s-node里面
+</span></span><span style="display:flex;"><span>ansible &#39;k8s-master:!k8s-node&#39; --list-hosts #非得关系，在k8s-master标签组里但不在 k8s-node里面
+</span></span></code></pre></div><p>正则表达式选择主机</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ansible &#39;~(k8s-master|k8s-node)&#39; -m ping
+</span></span></code></pre></div><h3 id="ansible-执行命令的过程">Ansible 执行命令的过程</h3>
+<p>1.加载 默认的/etc/ansible/ansible.cfg
+2.加载自己对应的模块文件，如 command
+3.通过ansible将模块或者命令生成对应的临时py文件，将文件传输至远程服务器对应执行用户的$HOME/.ansible/tmp/ansible-tmp-数字/xxx.py
+4.赋予执行权限
+5.执行并且返回结果
+6.删除py文件，退出</p>
+<h3 id="ansible执行的状态">ansible执行的状态</h3>
+<p>在 /etc/ansible/ansible.cfg 的 [colers] 模块中有颜色的详细说明</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>[colors]
+</span></span><span style="display:flex;"><span>#highlight = white
+</span></span><span style="display:flex;"><span>#verbose = blue
+</span></span><span style="display:flex;"><span>#warn = bright purple
+</span></span><span style="display:flex;"><span>#error = red
+</span></span><span style="display:flex;"><span>#debug = dark gray
+</span></span><span style="display:flex;"><span>#deprecate = purple
+</span></span><span style="display:flex;"><span>#skip = cyan
+</span></span><span style="display:flex;"><span>#unreachable = red
+</span></span><span style="display:flex;"><span>#ok = green
+</span></span><span style="display:flex;"><span>#changed = yellow
+</span></span><span style="display:flex;"><span>#diff_add = green
+</span></span><span style="display:flex;"><span>#diff_remove = red
+</span></span><span style="display:flex;"><span>#diff_lines = cyan
+</span></span></code></pre></div><h3 id="ansible-galaxy--ansible-使用别人下载的工具">ansible-galaxy # ansible 使用别人下载的工具</h3>
+<p>此工具会链接 <a href="https://galaxy.ansible.com">https://galaxy.ansible.com</a> 下载对应的roles</p>
+<p>列出已经安装的galaxy</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ansible-galaxy list
+</span></span></code></pre></div><p>下载对应的 roles</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>#
+</span></span><span style="display:flex;"><span>ansible-galaxy install pogosoftware.etcd
+</span></span><span style="display:flex;"><span>#返回内容&#34;
+</span></span><span style="display:flex;"><span>#- downloading role &#39;etcd&#39;, owned by pogosoftware
+</span></span><span style="display:flex;"><span>#- downloading role from https://github.com/pogosoftware/ansible-role-etcd/archive/v1.0.2.tar.gz
+</span></span><span style="display:flex;"><span>#- extracting pogosoftware.etcd to /root/.ansible/roles/pogosoftware.etcd
+</span></span><span style="display:flex;"><span>#- pogosoftware.etcd (v1.0.2) was installed successfully
+</span></span></code></pre></div><p>查看里面的roles结构</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span> tree  /root/.ansible/roles/pogosoftware.etcd
+</span></span><span style="display:flex;"><span>/root/.ansible/roles/pogosoftware.etcd
+</span></span><span style="display:flex;"><span>├── defaults
+</span></span><span style="display:flex;"><span>│   └── main.yml
+</span></span><span style="display:flex;"><span>├── handlers
+</span></span><span style="display:flex;"><span>│   └── main.yml
+</span></span><span style="display:flex;"><span>├── LICENSE
+</span></span><span style="display:flex;"><span>├── meta
+</span></span><span style="display:flex;"><span>│   └── main.yml
+</span></span><span style="display:flex;"><span>├── tasks
+</span></span><span style="display:flex;"><span>│   ├── etcd_user.yml
+</span></span><span style="display:flex;"><span>│   └── main.yml
+</span></span><span style="display:flex;"><span>└── templates
+</span></span><span style="display:flex;"><span>    └── etcd.service.j2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>5 directories, 7 files
+</span></span><span style="display:flex;"><span>#可以 cp -a 一个文件名称然后再里面改自己的定制化需求
+</span></span></code></pre></div><p>删除galaxy</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ansible-galaxy remove pogosoftware.etcd
+</span></span></code></pre></div><hr>
+<h3 id="ansible-pull">ansible-pull</h3>
+<p>将ansible的命令推送至远程</p>
+<h3 id="ansible-palybook-后面有详解">ansible-palybook (后面有详解)</h3>
+<p>此工具用于编写好的playbook任务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>cat hello.yml
+</span></span><span style="display:flex;"><span>- hosts: k8s-slave
+</span></span><span style="display:flex;"><span>  remote_user: root
+</span></span><span style="display:flex;"><span>  tasks:
+</span></span><span style="display:flex;"><span>    - name: hello world
+</span></span><span style="display:flex;"><span>      command: /usr/bin/wall hello world
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>#执行的时候记得打开 k8s-slave中的一个主机终端看效果
+</span></span><span style="display:flex;"><span> ansible k8s-slave  --list-host
+</span></span><span style="display:flex;"><span> 会发现终端输出了 hello  world
+</span></span></code></pre></div><h3 id="ansible-vault-加密yml文件">ansible-vault 加密yml文件</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ansible-vaut encrypt hello.yml #加密 会让输入加密口令
+</span></span><span style="display:flex;"><span>ansible-vaut decrypt hello.yml #解密
+</span></span><span style="display:flex;"><span>ansiblt-vault view hello.yml #查看
+</span></span><span style="display:flex;"><span>ansible-vault edit hello.yml #编辑加密文件
+</span></span><span style="display:flex;"><span>ansiblt-vault rekey hello.yml #修改口令
+</span></span><span style="display:flex;"><span>ansiblt-vault create new.yml #创建新文件
+</span></span></code></pre></div><h3 id="ansible-console-可交互命令">ansible-console 可交互命令</h3>
+<p>支持tab
+提示符号格式：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>执行用户@当前操作主机组（当期主机组的主机数量）[f:并发数]$
+</span></span></code></pre></div><p>常用子命令：</p>
+<ul>
+<li>设置并发数量：forks n 例如 forks 10</li>
+<li>切换组： cd 主机组 例如 cd web</li>
+<li>列出当前主机组例如 list</li>
+<li>列出所有的内置命令： ？ 或者help</li>
+</ul>
+<p>例子</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ansible-console
+</span></span><span style="display:flex;"><span>[WARNING]: Invalid characters were found in group names but not replaced, use -vvvv to see details
+</span></span><span style="display:flex;"><span>Welcome to the ansible console.
+</span></span><span style="display:flex;"><span>Type help or ? to list commands.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@all (4)[f:5]$ cd k8s-master
+</span></span><span style="display:flex;"><span>root@k8s-master (2)[f:5]$ list
+</span></span><span style="display:flex;"><span>10.241.12.1
+</span></span><span style="display:flex;"><span>10.241.12.2
+</span></span><span style="display:flex;"><span>root@k8s-master (2)[f:5]$ yum name=lftp
+</span></span><span style="display:flex;"><span>10.241.12.1 | SUCCESS =&gt; {
+</span></span><span style="display:flex;"><span>    &#34;ansible_facts&#34;: {
+</span></span><span style="display:flex;"><span>        &#34;discovered_interpreter_python&#34;: &#34;/usr/bin/python&#34;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    &#34;changed&#34;: false,
+</span></span><span style="display:flex;"><span>    &#34;msg&#34;: &#34;&#34;,
+</span></span><span style="display:flex;"><span>    &#34;rc&#34;: 0,
+</span></span><span style="display:flex;"><span>    &#34;results&#34;: [
+</span></span><span style="display:flex;"><span>        &#34;lftp-4.4.8-12.el7_8.1.x86_64 providing lftp is already installed&#34;
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><h2 id="六ansible-常用模块">六、Ansible 常用模块</h2>
+<h3 id="command-模块">Command 模块</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"></code></pre></div>
+        </article>
+    </div>
+
+    
+       	
+
+
+
+
+
+
+<div id="comments" class="post-comments">
+  <div class="comment-head">
+    <div class="comment-headline">
+      <i class="fa fa-comments fa-fw"></i>
+      
+    </div>
+  
+  </div>
+  <div class="comment-wrap">
+  
+  
+    <div>      
+      <div class="comment-loading">
+    <i class="fa fa-sync fa-spin"></i>
+  </div>
+      <div class="waline-container"></div>
+
+    </div>
+  
+  </div>
+</div>  
+
+    
+</div><aside class="Qc_aside">
+
+<section class="Qc_aside_item tags"> 
+    <div class="Qc_aside_item-title"> 
+        <i class="iconfont icon-A67" style="margin-right: 8px;font-size: 17px"></i> 
+        <span class="text">文章分类</span> 
+        <span class="qccq_mac"></span> 
+    </div> 
+    <div class="Qc_aside_item-contain" style="padding:10px"> 
+        <div class="tag"></div> 
+		<ul class="list">
+			
+			
+			   
+			<li class="item"> 
+				<a class="link" href="/categories/%E4%B8%93%E4%B8%9A%E6%8A%80%E8%83%BD/">专业技能 </a>
+				<span class="widget__counter widget__counter--bubble">1</span>
+			</li>
+			
+			   
+			<li class="item"> 
+				<a class="link" href="/categories/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/">个人随笔 </a>
+				<span class="widget__counter widget__counter--bubble">1</span>
+			</li>
+	</div>
+</section>
+
+
+
+
+<section class="Qc_aside_item tags"> 
+    <div class="Qc_aside_item-title"> 
+        <i class="iconfont icon-A67" style="margin-right: 8px;font-size: 17px"></i> 
+        <span class="text">标签云</span> 
+        <span class="xccx_mac"></span> 
+    </div> 
+     <div class="Qc_aside_item-contain" style="padding:10px"> 
+        <div class="tag"></div> 
+        <ul class="cloud">
+            
+
+                
+            <li class="item">
+                <a style="background:#4C83FF" href="/tags/anisble/" title="Anisble">Anisble</a>
+            </li>
+         </ul> 
+        </div> 
+    </section>
+
+
+
+    
+
+    <section class="sticky_layout"><style>
+
+    .card-widget:first-child {
+        margin-top: 0
+    }
+
+    @media screen and (max-width:900px) {
+        .card-widget:first-child {
+            margin-top: 20px
+        }
+    }
+
+     .card-widget {
+        position: relative;
+        overflow: hidden;
+        margin-top: 20px;
+        padding: 20px 24px;
+        color:var(--main)
+    }
+
+     .card-widget,
+    #recent-posts>.recent-post-item,
+    .cardHover,
+    .error404 #error-wrap .error-content,
+    .layout>.recent-posts .pagination>:not(.space),
+    .layout>div:first-child:not(.recent-posts) {
+        border-radius: 8px;
+        background: var(--background);
+        -webkit-box-shadow: var(--card-box-shadow);
+        box-shadow: var(--card-box-shadow);
+        -webkit-transition: all .3s;
+        -moz-transition: all .3s;
+        -o-transition: all .3s;
+        -ms-transition: all .3s;
+        transition: all .3s
+    }
+
+    .card-widget:hover,
+    #recent-posts>.recent-post-item:hover,
+    .cardHover:hover,
+    .error404 #error-wrap .error-content:hover,
+    .layout>.recent-posts .pagination>:not(.space):hover,
+    .layout>div:first-child:not(.recent-posts):hover {
+        -webkit-box-shadow: var(--card-hover-box-shadow);
+        box-shadow: var(--card-hover-box-shadow)
+    }
+
+
+
+    .item-headline {
+        padding-bottom: 6px;
+        font-size: 1.2em
+    }
+
+     .item-headline span {
+        margin-left: 6px
+    }
+
+   
+ 
+     @media screen and (min-width:900px) {
+        .sticky_layout {
+            position: sticky;
+            position: -webkit-sticky;
+            top: 60px;
+            -webkit-transition: top .3s;
+            -moz-transition: top .3s;
+            -o-transition: top .3s;
+            -ms-transition: top .3s;
+            transition: top .3s
+        }
+    } 
+
+    
+
+
+
+    #card-toc .toc-percentage {
+        float: right;
+        margin-top: -9px;
+        color: #a9a9a9;
+        font-style: italic;
+        font-size: 140%
+    }
+
+    #card-toc .toc-content {
+        overflow-y: scroll;
+        overflow-y: overlay;
+        margin: 0 -24px;
+        max-height: calc(100vh - 120px)
+    }
+
+    @media screen and (max-width:900px) {
+         #card-toc .toc-content {
+            max-height: calc(100vh - 140px)
+        }
+    }
+
+     #card-toc .toc-content>* {
+        margin: 0 20px !important
+    }
+
+
+
+     #card-toc .toc-content>*>.toc-item>.toc-child {
+        margin-left: 10px;
+        padding-left: 10px;
+        border-left: 1px solid var(--dark-grey)
+    }
+
+    #card-toc .toc-content:not(.is-expand) .toc-child {
+        display: none
+    }
+
+    @media screen and (max-width:900px) {
+        #card-toc .toc-content:not(.is-expand) .toc-child {
+            display: block !important
+        }
+    }
+
+   #card-toc .toc-content:not(.is-expand) .toc-item.active .toc-child {
+        display: block
+    }
+
+    #card-toc .toc-content li,
+     #card-toc .toc-content ol {
+        list-style: none
+    }
+
+     #card-toc .toc-content>ol {
+        padding: 0 !important
+    }
+
+    #card-toc .toc-content ol {
+        margin: 0;
+        padding-left: 18px
+    }
+
+    #card-toc .toc-content .toc-link {
+        display: block;
+        margin: 4px 0;
+        padding: 1px 6px;
+        color: var(--toc-link-color);
+        -webkit-transition: all .2s ease-in-out;
+        -moz-transition: all .2s ease-in-out;
+        -o-transition: all .2s ease-in-out;
+        -ms-transition: all .2s ease-in-out;
+        transition: all .2s ease-in-out
+    }
+
+     #card-toc .toc-content .toc-link:hover {
+        color: #49b1f5
+    }
+
+    #card-toc .toc-content .toc-link.active {
+        background: #00c4b6;
+        color: #fff
+    }
+
+     .sticky_layout:only-child>:first-child {
+        margin-top: 20px
+    }
+
+
+</style><div class="card-widget" id="card-toc">
+        <div class="item-headline">
+            <i class="fa fa-bars"></i>
+            <span>目录</span>
+            <span class="toc-percentage">0</span>
+        </div>
+        <div class="toc-content"><ol class="toc">
+                        <li class="toc-item toc-level-3">
+                            <a class="toc-link" href="#ansible" aria-label="Ansible" data-pjax-state="anchor">
+                                <span class="toc-number">1</span> 
+                                <span class="toc-text">Ansible</span>
+                            </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e4%b8%80%e7%89%b9%e7%82%b9" aria-label="一、特点" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">一、特点</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e4%ba%8c%e6%9e%b6%e6%9e%84" aria-label="二、架构" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">二、架构</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e7%94%a8%e6%88%b7%e7%9b%b4%e6%8e%a5%e4%bd%bf%e7%94%a8%e5%91%bd%e4%bb%a4%e6%88%96%e8%80%85%e4%bd%bf%e7%94%a8-playbook-%e6%88%96%e8%80%85-%e8%b0%83%e7%94%a8api-%e5%8e%bb%e8%bf%9c%e7%a8%8b%e4%b8%bb%e6%9c%ba%e6%89%a7%e8%a1%8c%e5%91%bd%e4%bb%a4" aria-label="用户直接使用命令或者使用 Playbook 或者 调用API 去远程主机执行命令" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">用户直接使用命令或者使用 Playbook 或者 调用API 去远程主机执行命令</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e4%b8%89%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9" aria-label="三、注意事项" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">三、注意事项</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e5%9b%9b%e5%ae%89%e8%a3%85" aria-label="四、安装" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">四、安装</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e4%ba%94%e5%9f%ba%e6%9c%ac%e4%bd%bf%e7%94%a8" aria-label="五、基本使用" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">五、基本使用</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e5%87%86%e5%a4%87%e6%9c%ba%e5%99%a8" aria-label="准备机器" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">准备机器</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#anisble%e7%ae%a1%e7%90%86%e4%b8%bb%e6%9c%ba%e7%9a%84%e6%96%b9%e5%bc%8f" aria-label="anisble管理主机的方式" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">anisble管理主机的方式</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" aria-label="配置文件" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">配置文件</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#ansible-doc-%e5%91%bd%e4%bb%a4%e6%96%87%e6%a1%a3" aria-label="ansible-doc 命令文档" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">ansible-doc 命令文档</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#ansible-%e5%91%bd%e4%bb%a4" aria-label="ansible 命令" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">ansible 命令</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e6%a0%bc%e5%bc%8f" aria-label="格式" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">格式</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e9%87%8d%e8%a6%81%e9%80%89%e9%a1%b9%e8%af%b4%e6%98%8e" aria-label="重要选项说明" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">重要选项说明</span>
+                        </a></li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e9%80%89%e6%8b%a9%e7%89%b9%e5%ae%9a%e4%b8%bb%e6%9c%ba" aria-label="选择特定主机" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">选择特定主机</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#ansible-%e6%89%a7%e8%a1%8c%e5%91%bd%e4%bb%a4%e7%9a%84%e8%bf%87%e7%a8%8b" aria-label="Ansible 执行命令的过程" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">Ansible 执行命令的过程</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#ansible%e6%89%a7%e8%a1%8c%e7%9a%84%e7%8a%b6%e6%80%81" aria-label="ansible执行的状态" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">ansible执行的状态</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#ansible-galaxy--ansible-%e4%bd%bf%e7%94%a8%e5%88%ab%e4%ba%ba%e4%b8%8b%e8%bd%bd%e7%9a%84%e5%b7%a5%e5%85%b7" aria-label="ansible-galaxy # ansible 使用别人下载的工具" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">ansible-galaxy # ansible 使用别人下载的工具</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#ansible-pull" aria-label="ansible-pull" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">ansible-pull</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#ansible-palybook-%e5%90%8e%e9%9d%a2%e6%9c%89%e8%af%a6%e8%a7%a3" aria-label="ansible-palybook (后面有详解)" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">ansible-palybook (后面有详解)</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#ansible-vault-%e5%8a%a0%e5%af%86yml%e6%96%87%e4%bb%b6" aria-label="ansible-vault 加密yml文件" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">ansible-vault 加密yml文件</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#ansible-console-%e5%8f%af%e4%ba%a4%e4%ba%92%e5%91%bd%e4%bb%a4" aria-label="ansible-console 可交互命令" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">ansible-console 可交互命令</span>
+                        </a></li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e5%85%adansible-%e5%b8%b8%e7%94%a8%e6%a8%a1%e5%9d%97" aria-label="六、Ansible 常用模块" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">六、Ansible 常用模块</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#command-%e6%a8%a1%e5%9d%97" aria-label="Command 模块" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">Command 模块</span>
+                        </a>
+                    </li>
+                </ol>
+                </li>
+                </ol>
+                </li>
+            </ol>
+
+        </div>
+    </div>
+
+
+
+
+
+<script>
+
+    const btf = {
+    
+        scrollToDest: (pos, time = 500) => {
+            const currentPos = window.pageYOffset
+            if (currentPos > pos) pos = pos - 70
+        
+            if ('scrollBehavior' in document.documentElement.style) {
+                window.scrollTo({
+                top: pos,
+                behavior: 'smooth'
+                })
+                return
+            }
+        
+            let start = null
+            pos = +pos
+            window.requestAnimationFrame(function step (currentTime) {
+                start = !start ? currentTime : start
+                const progress = currentTime - start
+                if (currentPos < pos) {
+                window.scrollTo(0, ((pos - currentPos) * progress / time) + currentPos)
+                } else {
+                window.scrollTo(0, currentPos - ((currentPos - pos) * progress / time))
+                }
+                if (progress < time) {
+                window.requestAnimationFrame(step)
+                } else {
+                window.scrollTo(0, pos)
+                }
+            })
+        },
+    
+       
+        getEleTop: ele => {
+            let actualTop = ele.offsetTop
+            let current = ele.offsetParent
+        
+            while (current !== null) {
+                actualTop += current.offsetTop
+                current = current.offsetParent
+            }
+        
+            return actualTop
+        },
+
+        updateAnchor: (anchor) => {
+            if (anchor !== window.location.hash) {
+                if (!anchor) anchor = location.pathname
+                const title = "秋码记录"
+                window.history.replaceState({
+                    url: location.href,
+                    title
+                }, title, anchor)
+            }
+        },
+
+
+        throttle: function (func, wait, options) {
+            let timeout, context, args
+            let previous = 0
+            if (!options) options = {}
+        
+            const later = function () {
+                previous = options.leading === false ? 0 : new Date().getTime()
+                timeout = null
+                func.apply(context, args)
+                if (!timeout) context = args = null
+            }
+        
+            const throttled = function () {
+                const now = new Date().getTime()
+                if (!previous && options.leading === false) previous = now
+                
+                const remaining = wait - (now - previous)
+                context = this
+                args = arguments
+                if (remaining <= 0 || remaining > wait) {
+                    if (timeout) {
+                        clearTimeout(timeout)
+                        timeout = null
+                    }
+                    previous = now
+                    func.apply(context, args)
+                    if (!timeout) context = args = null
+                } else if (!timeout && options.trailing !== false) {
+                    timeout = setTimeout(later, remaining)
+                }
+            }
+        
+            return throttled
+        },
+
+        getScrollPercent: (currentTop, ele) => {
+            const docHeight = ele.clientHeight
+            const winHeight = document.documentElement.clientHeight
+            const headerHeight = ele.offsetTop
+            const contentMath = (docHeight > winHeight) ? (docHeight - winHeight) : (document.documentElement.scrollHeight - winHeight)
+            const scrollPercent = (currentTop - headerHeight) / (contentMath)
+            const scrollPercentRounded = Math.round(scrollPercent * 100)
+            const percentage = (scrollPercentRounded > 100) ? 100 : (scrollPercentRounded <= 0) ? 0 : scrollPercentRounded
+            return percentage
+        },
+
+
+
+
+    }  
+
+
+
+     
+
+    const scrollFnToDo = function () {
+      const isToc = true 
+      const isAnchor = true 
+      const $article = document.getElementById('article-container')
+  
+      if (!($article && (isToc || isAnchor))) return
+  
+      let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand
+  
+      if (isToc) {
+        const $cardTocLayout = document.getElementById('card-toc')
+        $cardToc = $cardTocLayout.getElementsByClassName('toc-content')[0]
+        $tocLink = $cardToc.querySelectorAll('.toc-link')
+        $tocPercentage = $cardTocLayout.querySelector('.toc-percentage')
+        isExpand = $cardToc.classList.contains('is-expand')
+  
+        window.mobileToc = {
+          open: () => {
+            $cardTocLayout.style.cssText = 'animation: toc-open .3s; opacity: 1; right: 55px'
+          },
+  
+          close: () => {
+            $cardTocLayout.style.animation = 'toc-close .2s'
+            setTimeout(() => {
+              $cardTocLayout.style.cssText = "opacity:''; animation: ''; right: ''"
+            }, 100)
+          }
+        }
+  
+        
+        $cardToc.addEventListener('click', e => {
+          e.preventDefault()
+          const target = e.target.classList
+          if (target.contains('toc-content')) return
+          const $target = target.contains('toc-link')
+            ? e.target
+            : e.target.parentElement
+          btf.scrollToDest(btf.getEleTop(document.getElementById(decodeURI($target.getAttribute('href')).replace('#', ''))), 300)
+          if (window.innerWidth < 900) {
+            window.mobileToc.close()
+          }
+        })
+  
+        autoScrollToc = item => {
+          const activePosition = item.getBoundingClientRect().top
+          const sidebarScrollTop = $cardToc.scrollTop
+          if (activePosition > (document.documentElement.clientHeight - 100)) {
+            $cardToc.scrollTop = sidebarScrollTop + 150
+          }
+          if (activePosition < 100) {
+            $cardToc.scrollTop = sidebarScrollTop - 150
+          }
+        }
+      }
+  
+      
+      const list = $article.querySelectorAll('h1,h2,h3,h4,h5,h6')
+      let detectItem = ''
+      const findHeadPosition = function (top) {
+        if (top === 0) {
+          return false
+        }
+  
+        let currentId = ''
+        let currentIndex = ''
+  
+        list.forEach(function (ele, index) {
+          if (top > btf.getEleTop(ele) - 80) {
+            const id = ele.id
+            currentId = id ? '#' + encodeURI(id) : ''
+            currentIndex = index
+          }
+        })
+  
+        if (detectItem === currentIndex) return
+  
+        if (isAnchor) btf.updateAnchor(currentId)
+  
+        detectItem = currentIndex
+  
+        if (isToc) {
+          $cardToc.querySelectorAll('.active').forEach(i => { i.classList.remove('active') })
+  
+          if (currentId === '') {
+            return
+          }
+  
+          const currentActive = $tocLink[currentIndex]
+          currentActive.classList.add('active')
+  
+          setTimeout(() => {
+            autoScrollToc(currentActive)
+          }, 0)
+  
+          if (isExpand) return
+          let parent = currentActive.parentNode
+  
+          for (; !parent.matches('.toc'); parent = parent.parentNode) {
+            if (parent.matches('li')) parent.classList.add('active')
+          }
+        }
+      }
+  
+      
+      window.tocScrollFn = btf.throttle(() => {
+        const currentTop = window.scrollY || document.documentElement.scrollTop
+        
+         if(isToc){
+          $tocPercentage.textContent = btf.getScrollPercent(currentTop, $article)
+        }
+        findHeadPosition(currentTop)
+      }, 100)
+  
+      window.addEventListener('scroll', tocScrollFn)
+    }
+  
+
+    scrollFnToDo()
+</script>
+
+
+
+
+
+    </section>
+     
+
+</aside></div>
+	<footer class="Qc_footer">
+		<div class="Qc_container">
+			<div class="item">
+				<p>2018 - 2023 版权所有 ©<a href="http://beian.miit.gov.cn/">闽ICP备2021005633号-2</a></p>
+			</div>
+
+			<div class="item">
+				<p>
+					<strong>本站由 <span style="color:blue;font:bold;">Hugo</span> 驱动的 
+						<a href="https://github.com/zhenqicai/hugo-theme-kiwi" target="_blank" >hugo-theme-kiwi V0.0.1</a> 主题强力支撑</strong>
+				</p>
+			</div>
+		
+		</div>
+		</div>
+	</footer>
+
+	<style>
+		.joe_action {
+			position: fixed;
+			bottom: 90px;
+			right: 30px;
+			z-index: 333;
+		}
+
+
+		.joe_action_item.scroll.active {
+			visibility: visible;
+			-webkit-transform: scale(1);
+			transform: scale(1);
+		}
+
+		.joe_action_item.scroll {
+			visibility: hidden;
+			-webkit-transform: scale(0);
+			transform: scale(0);
+			transition: visibility 0.35s, -webkit-transform 0.35s;
+			transition: visibility 0.35s, transform 0.35s;
+			transition: visibility 0.35s, transform 0.35s, -webkit-transform 0.35s;
+		}
+
+		.joe_action_item {
+			box-shadow: rgb(0 0 0 / 10%) 0px 0px 10px, rgb(0 0 0 / 20%) 0px 5px 20px;
+			background: var(--darkreader-bg--background);
+		}
+		.joe_action_item {
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 40px;
+			height: 40px;
+			background: var(--background);
+			border-radius: 50%;
+			cursor: pointer;
+			margin-top: 15px;
+			box-shadow: 0 0 10px rgb(0 0 0 / 10%), 0 5px 20px rgb(0 0 0 / 20%);
+		}
+		.joe_action_item svg {
+			position: absolute;
+			width: 25px;
+			height: 25px;
+			fill: var(--theme);
+		}
+
+
+
+		.joe_action_item.mode svg{-webkit-transform:scale(0);transform:scale(0);opacity:0}
+		.joe_action_item.mode svg.active{-webkit-transform:scale(1);transform:scale(1);opacity:1}
+		
+	</style>
+
+
+	<div class="joe_action">
+		<div class="joe_action_item scroll ">
+			<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="25" height="25">
+				<path d="M725.902 498.916c18.205-251.45-93.298-410.738-205.369-475.592l-6.257-3.982-6.258 3.414c-111.502 64.853-224.711 224.142-204.8 475.59-55.751 53.476-80.214 116.623-80.214 204.8v15.36l179.2-35.27c11.378 40.39 58.596 69.973 113.21 69.973 54.613 0 101.262-29.582 112.64-68.836l180.337 36.41v-15.36c-.569-89.885-25.031-153.6-82.489-206.507zM571.733 392.533c-33.564 31.29-87.04 28.445-118.329-5.12s-28.444-87.04 5.12-117.76c33.565-31.289 87.04-28.444 118.33 5.12s28.444 86.471-5.12 117.76zm-56.32 368.64c-35.84 0-64.284 29.014-64.284 64.285 0 35.84 54.044 182.613 64.284 182.613s64.285-146.773 64.285-182.613c0-35.271-29.014-64.285-64.285-64.285z"></path>
+			</svg>
+		</div>
+		<div class="joe_action_item mode">
+			<svg class="icon-1 " viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="25" height="25">
+				<path d="M587.264 104.96c33.28 57.856 52.224 124.928 52.224 196.608 0 218.112-176.128 394.752-393.728 394.752-29.696 0-58.368-3.584-86.528-9.728C223.744 832.512 369.152 934.4 538.624 934.4c229.376 0 414.72-186.368 414.72-416.256 1.024-212.992-159.744-389.12-366.08-413.184z"></path>
+				<path d="M340.48 567.808l-23.552-70.144-70.144-23.552 70.144-23.552 23.552-70.144 23.552 70.144 70.144 23.552-70.144 23.552-23.552 70.144zM168.96 361.472l-30.208-91.136-91.648-30.208 91.136-30.208 30.72-91.648 30.208 91.136 91.136 30.208-91.136 30.208-30.208 91.648z"></path>
+			</svg>
+			<svg class="icon-2 active" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="25" height="25">
+				<path d="M234.24 512a277.76 277.76 0 1 0 555.52 0 277.76 277.76 0 1 0-555.52 0zM512 187.733a42.667 42.667 0 0 1-42.667-42.666v-102.4a42.667 42.667 0 0 1 85.334 0v102.826A42.667 42.667 0 0 1 512 187.733zm-258.987 107.52a42.667 42.667 0 0 1-29.866-12.373l-72.96-73.387a42.667 42.667 0 0 1 59.306-59.306l73.387 72.96a42.667 42.667 0 0 1 0 59.733 42.667 42.667 0 0 1-29.867 12.373zm-107.52 259.414H42.667a42.667 42.667 0 0 1 0-85.334h102.826a42.667 42.667 0 0 1 0 85.334zm34.134 331.946a42.667 42.667 0 0 1-29.44-72.106l72.96-73.387a42.667 42.667 0 0 1 59.733 59.733l-73.387 73.387a42.667 42.667 0 0 1-29.866 12.373zM512 1024a42.667 42.667 0 0 1-42.667-42.667V878.507a42.667 42.667 0 0 1 85.334 0v102.826A42.667 42.667 0 0 1 512 1024zm332.373-137.387a42.667 42.667 0 0 1-29.866-12.373l-73.387-73.387a42.667 42.667 0 0 1 0-59.733 42.667 42.667 0 0 1 59.733 0l72.96 73.387a42.667 42.667 0 0 1-29.44 72.106zm136.96-331.946H878.507a42.667 42.667 0 1 1 0-85.334h102.826a42.667 42.667 0 0 1 0 85.334zM770.987 295.253a42.667 42.667 0 0 1-29.867-12.373 42.667 42.667 0 0 1 0-59.733l73.387-72.96a42.667 42.667 0 1 1 59.306 59.306l-72.96 73.387a42.667 42.667 0 0 1-29.866 12.373z"></path>
+			</svg>
+		</div>
+	</div>
+
+	
+
+	
+
+	
+	<script src="https://hanzhongzi.github.io/js/highlight.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
+   
+
+   <script>
+	 function registerImageLoadEvent() {
+		const images = document.querySelectorAll('.sidebar img, .Qc_post img, .vendors-list img');
+				
+		const callback = (entries) => {
+			entries.forEach(item => {
+				if (item.intersectionRatio > 0) {
+					let ele = item.target;
+					let imgSrc = ele.getAttribute('src');
+					ele.setAttribute("src","1.png")
+					ele.setAttribute("data-lazy-src",imgSrc)
+					ele.classList.add("lazyload")
+			
+				}
+			})
+		};
+
+		Array.from(images).forEach(img => {
+			const bg = '/images/loading.gif'
+
+			img.setAttribute("data-lazy-src",img.src)
+			img.src = bg
+		})
+		
+	
+	}
+
+	registerImageLoadEvent()
+
+   </script>
+
+
+ <script src="https://hanzhongzi.github.io/js/lazyload.life.min.js"></script>
+
+ <script>
+	const lazyloadImg = () => {
+      window.lazyLoadInstance = new LazyLoad({
+        elements_selector: 'img',
+        threshold: 0,
+        data_src: 'lazy-src'
+      })
+    }
+
+	lazyloadImg()
+ </script>
+
+
+	</div>
+</body>
+
+
+
+</html>
+
+
+
+<script>
+	
+	var mybutton = document.querySelector(".joe_action .joe_action_item.scroll")
+    window.onscroll = function () {
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            
+            
+			mybutton.classList.add("active")
+        } else {
+            
+            
+			mybutton.classList.remove("active")
+        }
+    };
+
+	mybutton.addEventListener("click",() => {
+		document.documentElement.scrollTop = document.body.scrollTop = 0;
+	})
+	
+
+
+</script>
+
+
+
+<script>
+	var themeBtn = document.querySelector(".joe_action .joe_action_item.mode")
+	let icon_1 = document.querySelector(".joe_action .joe_action_item.mode .icon-1")
+	let icon_2 = document.querySelector(".joe_action .joe_action_item.mode .icon-2")
+    themeBtn.addEventListener("click", () => {
+		
+        if (icon_1.classList.contains("active")) {
+            icon_1.classList.remove('active');
+			icon_2.classList.add('active');
+			document.querySelector("html").removeAttribute("data-night")
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+			icon_2.classList.remove('active');
+			icon_1.classList.add('active');
+			document.querySelector("html").setAttribute("data-night","night")
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>

@@ -346,14 +346,57 @@
                 <ul class="Qc_list">
                         <li class="Qc_list_item wow index2">
     <div class="line"></div>
-    <a href="/cs/ansible/" class="thumbnail" title="Ansible" rel="noopener noreferrer">
+    <a href="/posts/hugo_first/" class="thumbnail" title="我又回来啦" rel="noopener noreferrer">
 
     </a>
     <div class="information">
-        <a href="/cs/ansible/" class="title" title="Ansible" rel="noopener noreferrer">
-            Ansible
+        <a href="/posts/hugo_first/" class="title" title="我又回来啦" rel="noopener noreferrer">
+            我又回来啦
         </a>
-        <a class="abstract" href="/cs/ansible/" title="文章摘要" rel="noopener noreferrer">Ansible 一篇搞定，快速学习
+        <a class="abstract" href="/posts/hugo_first/" title="文章摘要" rel="noopener noreferrer">云主机忘记续费回收了,,,看来还是免费的香。。。</a>
+        <div class="meta">
+            <ul class="items">
+                <li><i class="fa fa-calendar-times-o"></i>&nbsp;&nbsp;2023-12-25</li>
+            
+                <li>
+                    <i class="fa fa-eye"></i>&nbsp;
+                    <span class="waline-pageview-count" data-path="/posts/hugo_first/"></span>
+                </li>
+                <li>
+                    <i class="fa fa-comments-o"></i>&nbsp;
+                    <span  class="waline-comment-count" data-path="/posts/hugo_first/"></span>
+                </li>
+            </ul>
+            <div class="last" style="display:flex">
+                <i class="fa fa-folder-open" style="margin-right:2px;font-size:15px"></i>&nbsp;&nbsp;
+               
+                
+                    
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a class="link" href="/categories/" itemprop="url" rel="noopener noreferrer index">
+                    <span itemprop="name">[个人随笔]</span>
+                  </a>
+                </span>
+                
+                
+
+            </div>
+        </div>
+    </div>
+</li>
+
+    
+                    
+                        <li class="Qc_list_item wow index2">
+    <div class="line"></div>
+    <a href="/posts/ansible/" class="thumbnail" title="Ansible 一片文章全搞定" rel="noopener noreferrer">
+
+    </a>
+    <div class="information">
+        <a href="/posts/ansible/" class="title" title="Ansible 一片文章全搞定" rel="noopener noreferrer">
+            Ansible 一片文章全搞定
+        </a>
+        <a class="abstract" href="/posts/ansible/" title="文章摘要" rel="noopener noreferrer">Ansible 一篇搞定，快速学习
 一、特点 模块化： 调用特定的模块，完成特定的内容 使用 Paramiko(Python对于ssh的实现)，PyYAML,Jinja2(模板语言) 三个关键模块 支持自定义模块，可以使用任何语言编写 基于Python实现 不是简单，基于Python和SSH,无agent，无需代理，不依赖PKI(无需SSL) 安全，基于OpenSSH 幂等性：一个任务执行一遍和N边结果是一样的（要注意代码逻辑） 支持playbook编排任务，YAML格式，编排任务，支持丰富的数据机构 较强大的role的多层解决方案 二、架构 用户/PLAYBOOK =&gt; INVENTORY/API/MODULES/PLUGINS =&gt; HOSTS/NETWORK INVEMTORY: Ansible管理主机的清单 /etc/ansible/hosts MODULES: Ansible执行命令的功能模块、多数为内置核心模块，也可以自定义 PLUGINS: 模块功能的补充，如连接类型插件、循环插件、变量插件、过滤插件等 API: 供第三方程序调用的应用程序接口 用户直接使用命令或者使用 Playbook 或者 调用API 去远程主机执行命令 三、注意事项 执行ansible的主机一般称为主控端，中控，master或堡垒机 主控段python需要在2.6或以上 被控端python版本小鱼2.4的需要安装 python-simplejson windows不能作为主控 四、安装 epel源rpm包安装 sudo yum -y install epel-release &amp;&amp; sudo yum -y install ansible
 官方其他安装方式
 查看安装版本和命令
@@ -364,11 +407,11 @@ ansible --version ansible 2.9.27 config file = /etc/ansible/ansible.cfg configur
             
                 <li>
                     <i class="fa fa-eye"></i>&nbsp;
-                    <span class="waline-pageview-count" data-path="/cs/ansible/"></span>
+                    <span class="waline-pageview-count" data-path="/posts/ansible/"></span>
                 </li>
                 <li>
                     <i class="fa fa-comments-o"></i>&nbsp;
-                    <span  class="waline-comment-count" data-path="/cs/ansible/"></span>
+                    <span  class="waline-comment-count" data-path="/posts/ansible/"></span>
                 </li>
             </ul>
             <div class="last" style="display:flex">
@@ -376,6 +419,12 @@ ansible --version ansible 2.9.27 config file = /etc/ansible/ansible.cfg configur
                
                 
                     
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a class="link" href="/categories/" itemprop="url" rel="noopener noreferrer index">
+                    <span itemprop="name">[专业技能]</span>
+                  </a>
+                </span>
+                
                 
 
             </div>
@@ -408,6 +457,12 @@ ansible --version ansible 2.9.27 config file = /etc/ansible/ansible.cfg configur
 			
 			   
 			<li class="item"> 
+				<a class="link" href="/categories/%E4%B8%93%E4%B8%9A%E6%8A%80%E8%83%BD/">专业技能 </a>
+				<span class="widget__counter widget__counter--bubble">1</span>
+			</li>
+			
+			   
+			<li class="item"> 
 				<a class="link" href="/categories/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/">个人随笔 </a>
 				<span class="widget__counter widget__counter--bubble">1</span>
 			</li>
@@ -426,6 +481,12 @@ ansible --version ansible 2.9.27 config file = /etc/ansible/ansible.cfg configur
      <div class="Qc_aside_item-contain" style="padding:10px"> 
         <div class="tag"></div> 
         <ul class="cloud">
+            
+
+                
+            <li class="item">
+                <a style="background:#4C83FF" href="/tags/anisble/" title="Anisble">Anisble</a>
+            </li>
          </ul> 
         </div> 
     </section>
