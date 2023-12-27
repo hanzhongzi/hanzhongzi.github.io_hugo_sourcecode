@@ -1,9 +1,9 @@
 # ====================================================================
-# 
+#
 # 建议在修改以下配置时，请拷贝调整以免造成不必要的冲突，来完善您站点的配置
 #
-# It is recommended to copy and adjust the following configurations 
-# to avoid unnecessary conflicts and improve the configuration of 
+# It is recommended to copy and adjust the following configurations
+# to avoid unnecessary conflicts and improve the configuration of
 # your site
 #
 # ====================================================================
@@ -12,7 +12,7 @@
 #
 # Hugo 引擎的基础配置
 #
-# Basic configure for Hugo engine 
+# Basic configure for Hugo engine
 #
 # --------------------------------------------------------------------
 
@@ -53,19 +53,19 @@ menus:
       pre: user
       weight: 2
 
-params: 
+params:
   dateFormat: "2006-01-02"
   timeFormat: "2006-01-02T15:04:05-07:00"
-  
-  postMeta: 
+
+  postMeta:
     categories: true
 
-  cover: 
+  cover:
     hidden: false # hide everywhere but not in structured data
     hiddenInList: false # hide on list pages and home
     hiddenInSingle: false # hide on single page
-  
-  sidebar: 
+
+  sidebar:
     widgets: [ "categories", "tags"]
   # 文章目录显示
   # Table of Contents in the Sidebar
@@ -76,11 +76,11 @@ params:
     # Automatically add list number to toc.
     number: true
     # 开启自动换行显示
-    # If true, all words will placed on next lines 
+    # If true, all words will placed on next lines
     # if header width longer then sidebar width.
     wrap: false
     # 自动展开子列表
-    # If true, all level of TOC in a post will be displayed, 
+    # If true, all level of TOC in a post will be displayed,
     # rather than the activated part of it.
     expandAll: false
     # 最大的列表深度，建议不要超过3层
@@ -92,15 +92,15 @@ params:
   comments:
     # 开启评论组件
     # If true, will show comment component in post end.
-    enable: true  
+    enable: true
     # 设置默认使用的评论插件
     # 可选值：livere | waline | utterances | artalk | giscus
     # Choose a comment system to be displayed by default.
-    # Available values: livere | waline | utterances | artalk | giscus 
+    # Available values: livere | waline | utterances | artalk | giscus
     active: waline
     # 让用户自己选择使用评论插件留言
     # 如果设置为 false，将采用 active 参数的那个插件
-    # Setting `true` means remembering the comment system selected by 
+    # Setting `true` means remembering the comment system selected by
     # the visitor, otherwise use the `active` setting comment system.
     storage: true
     # TODO
@@ -124,10 +124,10 @@ params:
     emoji: [
       '//unpkg.com/@waline/emojis@1.1.0/bilibili',
       '//unpkg.com/@waline/emojis@1.1.0/weibo',
-      'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tw-emoji',
-      'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/alus',
-      'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/qq',
-      'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tieba',
+      'cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tw-emoji',
+      'cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/alus',
+      'cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/qq',
+      'cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tieba',
     ]
     login: 'disable'
     imgUploader: false
@@ -137,7 +137,7 @@ params:
     reactionText: [ '点赞', '踩一下', '得意', '不屑', '尴尬', '睡觉']
     reactionTitle: "你认为这篇文章怎么样？"
     serverURL: "app-production-dfd0.up.railway.app"
-  
+
 
   css: css
   js: js
