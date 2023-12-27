@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>个人随笔 on 瀚中子的个人网站</title>
+    <link>https://hanzhongzi.github.io/categories/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/</link>
+    <description>Recent content in 个人随笔 on 瀚中子的个人网站</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 25 Dec 2023 17:57:29 +0800</lastBuildDate>
+    <atom:link href="https://hanzhongzi.github.io/categories/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>我又回来啦</title>
+      <link>https://hanzhongzi.github.io/posts/hugo_first/</link>
+      <pubDate>Mon, 25 Dec 2023 17:57:29 +0800</pubDate>
+      <guid>https://hanzhongzi.github.io/posts/hugo_first/</guid>
+      <description>云主机忘记续费回收了,,,看来还是免费的香。。。</description>
+    </item>
+  </channel>
+</rss>

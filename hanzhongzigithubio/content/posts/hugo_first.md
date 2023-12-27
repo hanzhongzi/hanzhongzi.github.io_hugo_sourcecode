@@ -2,7 +2,7 @@
 title = '我又回来啦'
 date = 2023-12-25T17:57:29+08:00
 draft = false
-categories = ['individual_test']
+categories = ['个人随笔']
 +++
 
 云主机忘记续费回收了,,,看来还是免费的香。。。
