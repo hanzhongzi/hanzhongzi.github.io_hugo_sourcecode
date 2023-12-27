@@ -1,3 +1,6 @@
 [submodule "hanzhongzigithubio/themes/kagome"]
 	path = hanzhongzigithubio/themes/kagome
 	url = https://github.com/miiiku/hugo-theme-kagome.git
+[submodule "hanzhongzigithubio/themes/hugo-theme-kiwi"]
+	path = hanzhongzigithubio/themes/hugo-theme-kiwi
+	url = https://github.com/zhenqicai/hugo-theme-kiwi.git
