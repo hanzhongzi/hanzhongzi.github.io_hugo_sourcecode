@@ -1,7 +1,7 @@
 +++
 title = 'Ansible'
 date = 2019-07-17T23:02:42+08:00
-draft = true
+draft = false
 +++
 
 # Ansible 

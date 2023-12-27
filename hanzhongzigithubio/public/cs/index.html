@@ -6,16 +6,13 @@
 <html lang="en">
 
 <head>
-	<meta name="generator" content="Hugo 0.121.1">
-<title>瀚中子的个人网站</title>
+<title>Cs</title>
 <meta name="viewport"content="width=device-width, user-scalable=no, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
 
-<meta name="keywords" content="">
+<meta name="description" content="Cs">
 
-<meta name="description" content="瀚中子的个人网站">
-
-<meta itemprop="name" content="瀚中子的个人网站">
-<meta itemprop="description" content="瀚中子的个人网站">
+<meta itemprop="name" content="Cs">
+<meta itemprop="description" content="Cs">
 <meta itemprop="image" content="https://hanzhongzi.github.io/img/author.jpg">
 
 
@@ -86,25 +83,30 @@
 
 
 
-<link rel="stylesheet" href="https://hanzhongzi.github.io/css/index.min.css" />
-
 <script type="module">
-    import { pageviewCount } from 'https://unpkg.com/@waline/client@2.15.5/dist/pageview.mjs';
-    import { commentCount } from 'https://unpkg.com/@waline/client@2.15.5/dist/comment.mjs';
-
-    pageviewCount({
-        serverURL:  "comment.qiucode.cn"
-        
-    });
+    import { init } from 'https://unpkg.com/@waline/client@v2/dist/waline.mjs';
   
-    commentCount({
-      serverURL: "comment.qiucode.cn"
-  
-      
-      
+    init({
+      el: '.waline-container',
+      placeholder: "请不要吝啬您的评论 ヾ(≧▽≦*)o",
+      sofa: "瞧，这里没人，还不抢占第一的位置 (≧∀≦)ゞ",
+      pageview: true, 
+      comment: true, 
+      emoji: [
+        '//unpkg.com/@waline/emojis@1.1.0/weibo',
+        '//unpkg.com/@waline/emojis@1.1.0/bilibili',
+      ],
+      login: 'disable',
+      imgUploader: false,
+      wordLimit: 200,
+      requiredMeta: ['nick', 'mail'],
+      reaction: true,
+      reactionText: [ '点赞', '踩一下', '得意', '不屑', '尴尬', '睡觉'],
+      reactionTitle: "您认为这篇文章怎么样？",
+      dark: 'auto', 
+      serverURL: "comment.qiucode.cn",
     });
   </script>
-
   
 
 
@@ -183,7 +185,7 @@
                 src="/static/front/images/qiu-logo.png" /></a>
         <nav class="Qc_header_above_nav"> 
             
-            <a class="item  active " href="/" title="首页" style="margin-right:8px">
+            <a class="item " href="/" title="首页" style="margin-right:8px">
                 <i class="fa fa-home"></i> 首页
             </a>
            
