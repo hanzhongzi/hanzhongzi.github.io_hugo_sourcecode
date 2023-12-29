@@ -1,0 +1,45 @@
+name: Build and Deploy Hugo Site
+
+on:
+  push:
+    branches:
+      - main  # 或者你使用的是哪个分支
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v2
+      with:
+        repository: 'hanzhongzi/hanzhongzi.github.io_hugo_sourcecode'
+        path: 'source_code'
+
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v2
+      with:
+        hugo-version: 'latest'
+
+    - name: Build Hugo site
+      run: hugo --config hugo.yaml
+      working-directory: ./source_code
+
+    - name: Checkout public repository
+      uses: actions/checkout@v2
+      with:
+        repository: 'hanzhongzi/hanzhongzi.github.io'
+        path: 'public_repo'
+
+    - name: Copy public directory to public repository
+      run: |
+        cp -fR source_code/public/* public_repo/
+
+    - name: Commit and Push changes
+      run: |
+        cd public_repo
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add .
+        git commit -m "Automated deployment: $(date +'%Y-%m-%d %H:%M:%S')"
+        git push origin main
+
