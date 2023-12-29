@@ -32,7 +32,7 @@ jobs:
 
     - name: Copy public directory to public repository
       run: |
-        cp -fR source_code/public/* public_repo/
+        cd hanzhongzigithubio ;cp -fR source_code/public/* public_repo/
 
     - name: Commit and Push changes
       run: |
