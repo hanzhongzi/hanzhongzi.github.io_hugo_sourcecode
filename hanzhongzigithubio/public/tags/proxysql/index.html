@@ -6,13 +6,13 @@
 <html lang="en">
 
 <head>
-<title>Anisble</title>
+<title>ProxySQL</title>
 <meta name="viewport"content="width=device-width, user-scalable=no, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
 
-<meta name="description" content="Anisble">
+<meta name="description" content="ProxySQL">
 
-<meta itemprop="name" content="Anisble">
-<meta itemprop="description" content="Anisble">
+<meta itemprop="name" content="ProxySQL">
+<meta itemprop="description" content="ProxySQL">
 <meta itemprop="image" content="https://hanzhongzi.github.io/img/author.jpg">
 
 
@@ -348,29 +348,37 @@
                 <ul class="Qc_list">
                         <li class="Qc_list_item wow index2">
     <div class="line"></div>
-    <a href="/posts/ansible/" class="thumbnail" title="Ansible 一片文章全搞定" rel="noopener noreferrer">
+    <a href="/post/proxysql/" class="thumbnail" title="ProxySQL 一篇文章搞定" rel="noopener noreferrer">
 
     </a>
     <div class="information">
-        <a href="/posts/ansible/" class="title" title="Ansible 一片文章全搞定" rel="noopener noreferrer">
-            Ansible 一片文章全搞定
+        <a href="/post/proxysql/" class="title" title="ProxySQL 一篇文章搞定" rel="noopener noreferrer">
+            ProxySQL 一篇文章搞定
         </a>
-        <a class="abstract" href="/posts/ansible/" title="文章摘要" rel="noopener noreferrer">Ansible 一篇搞定，快速学习
-一、特点 模块化： 调用特定的模块，完成特定的内容 使用 Paramiko(Python对于ssh的实现)，PyYAML,Jinja2(模板语言) 三个关键模块 支持自定义模块，可以使用任何语言编写 基于Python实现 不是简单，基于Python和SSH,无agent，无需代理，不依赖PKI(无需SSL) 安全，基于OpenSSH 幂等性：一个任务执行一遍和N边结果是一样的（要注意代码逻辑） 支持playbook编排任务，YAML格式，编排任务，支持丰富的数据机构 较强大的role的多层解决方案 二、架构 用户/PLAYBOOK =&gt; INVENTORY/API/MODULES/PLUGINS =&gt; HOSTS/NETWORK INVEMTORY: Ansible管理主机的清单 /etc/ansible/hosts MODULES: Ansible执行命令的功能模块、多数为内置核心模块，也可以自定义 PLUGINS: 模块功能的补充，如连接类型插件、循环插件、变量插件、过滤插件等 API: 供第三方程序调用的应用程序接口 用户直接使用命令或者使用 Playbook 或者 调用API 去远程主机执行命令 三、注意事项 执行ansible的主机一般称为主控端，中控，master或堡垒机 主控段python需要在2.6或以上 被控端python版本小鱼2.4的需要安装 python-simplejson windows不能作为主控 四、安装 epel源rpm包安装 sudo yum -y install epel-release &amp;&amp; sudo yum -y install ansible
-官方其他安装方式
-查看安装版本和命令
-ansible --version ansible 2.9.27 config file = /etc/ansible/ansible.cfg configured module search path = [u&#39;/root/.ansible/plugins/modules&#39;, u&#39;/usr/share/ansible/plugins/modules&#39;] ansible python module location = /usr/lib/python2.</a>
+        <a class="abstract" href="/post/proxysql/" title="文章摘要" rel="noopener noreferrer">ProxySql.md
+ProxySQL 编写人 编写时间 编写说明 章瀚中 2020-9-12 接上一篇Mysql5.7主从搭建一起观看较佳 简单介绍: ProxySQL 是基于 MySQL 的一款开源的中间件的产品，是一个灵活的 MySQL 代理层，可以实现读写分离，支持 Query 路由功能，支持动态指定某个 SQL 进行缓存，支持动态加载（无需重启 ProxySQL 服务），故障切换和一些 SQL 的过滤功能。
+github地址：https://github.com/sysown/proxysql/releases
+官方文档: https://proxysql.com/documentation/
+下载与安装 Ubuntu 下载 wget https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql_2.0.14-dbg-ubuntu16_amd64.deb 安装 dpkg -i proxysql_2.0.14-dbg-ubuntu16_amd64.deb
+Centos8 下载 wget https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql-2.0.14-1-dbg-centos8.x86_64.rpm
+安装 yum -y install proxysql-2.0.14-1-centos8.x86_64.rpm
+centos7 : https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql-2.0.14-1-centos7.x86_64.rpm
+启动 启动：systemctl restart proxysql
+停止: systemctl stop proxysql
+默认监听 6032 和 6033 端口,6032 是 ProxySQL 的管理端口号，6033是对外服务的端口号 ProxySQL 的用户名和密码都是默认的 admin。
+登录 需要有mysql的客户端
+[root@localhost proxysql]# mysql -u admin -padmin -h 127.</a>
         <div class="meta">
             <ul class="items">
-                <li><i class="fa fa-calendar-times-o"></i>&nbsp;&nbsp;2019-07-17</li>
+                <li><i class="fa fa-calendar-times-o"></i>&nbsp;&nbsp;2023-12-29</li>
             
                 <li>
                     <i class="fa fa-eye"></i>&nbsp;
-                    <span class="waline-pageview-count" data-path="/posts/ansible/"></span>
+                    <span class="waline-pageview-count" data-path="/post/proxysql/"></span>
                 </li>
                 <li>
                     <i class="fa fa-comments-o"></i>&nbsp;
-                    <span  class="waline-comment-count" data-path="/posts/ansible/"></span>
+                    <span  class="waline-comment-count" data-path="/post/proxysql/"></span>
                 </li>
             </ul>
             <div class="last" style="display:flex">

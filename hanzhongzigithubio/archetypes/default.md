@@ -19,7 +19,7 @@ tags:
 comment:
   enable: true
 # 用于对外访问的地址
-url: article/175
+url: artice/{{ .Name }}
 # 是否显示目录
 toc: true
 
@@ -32,5 +32,5 @@ cover:
    relative: false
 
 #是否为草稿
-draft = false
-+++
+draft: false
+---

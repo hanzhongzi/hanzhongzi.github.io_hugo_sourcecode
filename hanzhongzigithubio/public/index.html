@@ -346,6 +346,61 @@
                 <ul class="Qc_list">
                         <li class="Qc_list_item wow index2">
     <div class="line"></div>
+    <a href="/post/proxysql/" class="thumbnail" title="ProxySQL 一篇文章搞定" rel="noopener noreferrer">
+
+    </a>
+    <div class="information">
+        <a href="/post/proxysql/" class="title" title="ProxySQL 一篇文章搞定" rel="noopener noreferrer">
+            ProxySQL 一篇文章搞定
+        </a>
+        <a class="abstract" href="/post/proxysql/" title="文章摘要" rel="noopener noreferrer">ProxySql.md
+ProxySQL 编写人 编写时间 编写说明 章瀚中 2020-9-12 接上一篇Mysql5.7主从搭建一起观看较佳 简单介绍: ProxySQL 是基于 MySQL 的一款开源的中间件的产品，是一个灵活的 MySQL 代理层，可以实现读写分离，支持 Query 路由功能，支持动态指定某个 SQL 进行缓存，支持动态加载（无需重启 ProxySQL 服务），故障切换和一些 SQL 的过滤功能。
+github地址：https://github.com/sysown/proxysql/releases
+官方文档: https://proxysql.com/documentation/
+下载与安装 Ubuntu 下载 wget https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql_2.0.14-dbg-ubuntu16_amd64.deb 安装 dpkg -i proxysql_2.0.14-dbg-ubuntu16_amd64.deb
+Centos8 下载 wget https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql-2.0.14-1-dbg-centos8.x86_64.rpm
+安装 yum -y install proxysql-2.0.14-1-centos8.x86_64.rpm
+centos7 : https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql-2.0.14-1-centos7.x86_64.rpm
+启动 启动：systemctl restart proxysql
+停止: systemctl stop proxysql
+默认监听 6032 和 6033 端口,6032 是 ProxySQL 的管理端口号，6033是对外服务的端口号 ProxySQL 的用户名和密码都是默认的 admin。
+登录 需要有mysql的客户端
+[root@localhost proxysql]# mysql -u admin -padmin -h 127.</a>
+        <div class="meta">
+            <ul class="items">
+                <li><i class="fa fa-calendar-times-o"></i>&nbsp;&nbsp;2023-12-29</li>
+            
+                <li>
+                    <i class="fa fa-eye"></i>&nbsp;
+                    <span class="waline-pageview-count" data-path="/post/proxysql/"></span>
+                </li>
+                <li>
+                    <i class="fa fa-comments-o"></i>&nbsp;
+                    <span  class="waline-comment-count" data-path="/post/proxysql/"></span>
+                </li>
+            </ul>
+            <div class="last" style="display:flex">
+                <i class="fa fa-folder-open" style="margin-right:2px;font-size:15px"></i>&nbsp;&nbsp;
+               
+                
+                    
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a class="link" href="/categories/" itemprop="url" rel="noopener noreferrer index">
+                    <span itemprop="name">[专业技能]</span>
+                  </a>
+                </span>
+                
+                
+
+            </div>
+        </div>
+    </div>
+</li>
+
+    
+                    
+                        <li class="Qc_list_item wow index2">
+    <div class="line"></div>
     <a href="/article/175/" class="thumbnail" title="Etcd" rel="noopener noreferrer">
 
     </a>
@@ -507,7 +562,7 @@ ansible --version ansible 2.9.27 config file = /etc/ansible/ansible.cfg configur
 			   
 			<li class="item"> 
 				<a class="link" href="/categories/%E4%B8%93%E4%B8%9A%E6%8A%80%E8%83%BD/">专业技能 </a>
-				<span class="widget__counter widget__counter--bubble">2</span>
+				<span class="widget__counter widget__counter--bubble">3</span>
 			</li>
 			
 			   
@@ -540,6 +595,11 @@ ansible --version ansible 2.9.27 config file = /etc/ansible/ansible.cfg configur
                 
             <li class="item">
                 <a style="background:#4C83FF" href="/tags/etcd/" title="ETCD">ETCD</a>
+            </li>
+
+                
+            <li class="item">
+                <a style="background:#4C83FF" href="/tags/proxysql/" title="ProxySQL">ProxySQL</a>
             </li>
          </ul> 
         </div> 

@@ -1,0 +1,2339 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>ProxySQL 一篇文章搞定</title>
+<meta name="viewport"content="width=device-width, user-scalable=no, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
+
+<meta name="description" content="ProxySQL 速通">
+
+<meta itemprop="name" content="ProxySQL 一篇文章搞定">
+<meta itemprop="description" content="ProxySQL 速通">
+<meta itemprop="image" content="https://hanzhongzi.github.io/img/author.jpg">
+
+
+<meta name="twitter:description" content="ProxySQL 速通" />
+
+
+<link rel="alternate" href="https://hanzhongzi.github.io/feed.xml" title="瀚中子的个人网站" type="application/rss+xml"/>
+
+<link rel="shortcut icon" href="https://hanzhongzi.github.io/imgs/icons/favicon.ico"/>
+<link rel="apple-touch-icon" href="https://hanzhongzi.github.io/imgs/icons/apple-touch-icon.png" />
+<link rel="apple-touch-icon-precomposed" href="https://hanzhongzi.github.io/imgs/icons/apple-touch-icon.png" />
+
+
+
+
+<style>
+    @font-face {
+        font-family: 'Xc Font';
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+        src: url('https://cdn.jsdelivr.net/gh/Xpblog666/cdn@1.0/HarmonyOS_Sans_SC_Medium.ttf');
+        src: url('https://cdn.jsdelivr.net/gh/Xpblog666/cdn@1.0/HarmonyOS_Sans_SC_Medium.ttf') format('truetype');
+    }
+
+    html {
+        font-family: 'Xc Font', 'PingFang SC', 'Noto Serif SC', 'HarmonyOS_Sans_SC_Medium', 'Fira Mono', 'Microsoft YaHei', Arial, sans-serif
+    }
+
+    html .Qc_header_above .Qc_container {
+        max-width: 1720px
+    }
+
+    html .Qc_header_below .Qc_container {
+        max-width: 1720px
+    }
+
+    html .Qc_header_searchout .Qc_container {
+        max-width: 1720px
+    }
+
+    html .Qc_main {
+        max-width: 980px
+    }
+
+    html .Qc_aside {
+        width: 260px
+    }
+
+    body::before {
+        background: #f0f0f0;
+        background: ;
+        background-position: center 0;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+
+
+<link rel="stylesheet" href="https://hanzhongzi.github.io/css/global.min.css" />
+<link rel="stylesheet" href="https://hanzhongzi.github.io/css/style.css" />
+<link rel="stylesheet" href="https://hanzhongzi.github.io/css/theme.min.css" />
+
+<link rel="stylesheet" href="https://hanzhongzi.github.io/css/font-awesome.min.css" />
+
+
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css" />
+
+
+
+<script type="module">
+    import { init } from 'https://unpkg.com/@waline/client@v2/dist/waline.mjs';
+  
+    init({
+      el: '.waline-container',
+      placeholder: "请不要吝啬您的评论 ヾ(≧▽≦*)o",
+      sofa: "瞧，这里没人，还不抢占第一的位置 (≧∀≦)ゞ",
+      pageview: true, 
+      comment: true, 
+      emoji: [
+        '//unpkg.com/@waline/emojis@1.1.0/weibo',
+        '//unpkg.com/@waline/emojis@1.1.0/bilibili',
+      ],
+      login: 'disable',
+      imgUploader: false,
+      wordLimit: 200,
+      requiredMeta: ['nick', 'mail'],
+      reaction: true,
+      reactionText: [ '点赞', '踩一下', '得意', '不屑', '尴尬', '睡觉'],
+      reactionTitle: "您认为这篇文章怎么样？",
+      dark: 'auto', 
+      serverURL: "app-production-dfd0.up.railway.app",
+    });
+  </script>
+  
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+
+                
+ 
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+	<header class="Qc_header  active Qc_slid">
+<div class="Qc_header_above">
+    <div class="Qc_container"> 
+        <svg class="Qc_header_above-slideicon" viewBox="0 0 1152 1024"
+            xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+            <path
+                d="M76.032 872a59.968 59.968 0 1 0 0 120h999.936a59.968 59.968 0 1 0 0-120H76.032zm16-420.032a59.968 59.968 0 1 0 0 120h599.936a59.968 59.968 0 1 0 0-119.936H92.032zM76.032 32a59.968 59.968 0 1 0 0 120h999.936a60.032 60.032 0 0 0 0-120H76.032z" />
+        </svg> 
+        <a class="Qc_header_above-logo" href="/" title="John'Blog"> 
+            <img class="Qc_logo"
+                src="/static/front/images/qiu-logo.png" /></a>
+        <nav class="Qc_header_above_nav"> 
+            
+            <a class="item " href="/" title="首页" style="margin-right:8px">
+                <i class="fa fa-home"></i> 首页
+            </a>
+           
+            <a class="item " href="/flinks" title="友情链接">
+                <i class="fa fa-link"></i>友情链接
+            </a> 
+
+
+            <a class="item " href="/about" title="关于我">
+                <i class="fa fa-user"></i>关于本站
+            </a>
+        </nav> 
+
+        
+        
+        <svg class="Qc_header_above-searchicon" viewBox="0 0 1024 1024"
+            xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="display: block;">
+            <path
+                d="M1008.19 932.031L771.72 695.56a431.153 431.153 0 1 0-76.158 76.158l236.408 236.472a53.758 53.758 0 0 0 76.158 0 53.758 53.758 0 0 0 0-76.158zM107.807 431.185a323.637 323.637 0 0 1 323.316-323.381 323.7 323.7 0 0 1 323.381 323.38 323.637 323.637 0 0 1-323.38 323.317 323.637 323.637 0 0 1-323.317-323.316z" />
+        </svg> 
+        <a href="javascript:void(0)" type="button" id="ClickMe" style="margin: 0px 3px 2px 13px"><svg
+                t="1675873194952" class="loingico" viewBox="0 0 1024 1024" version="1.1"
+                xmlns="http://www.w3.org/2000/svg" p-id="3929" width="22" height="22">
+                <path
+                    d="M554.666667 349.44a48.213333 48.213333 0 1 1-47.786667 47.786667A48.213333 48.213333 0 0 1 554.666667 349.44m0-85.333333a133.546667 133.546667 0 1 0 133.546666 133.12A133.12 133.12 0 0 0 554.666667 264.106667z"
+                    fill="var(--routine)" p-id="3930"></path>
+                <path
+                    d="M768 759.893333a42.666667 42.666667 0 0 1-42.666667-42.666666 170.666667 170.666667 0 0 0-341.333333 0 42.666667 42.666667 0 0 1-85.333333 0 256 256 0 0 1 512 0 42.666667 42.666667 0 0 1-42.666667 42.666666z"
+                    fill="var(--routine)" p-id="3931"></path>
+                <path
+                    d="M554.666667 213.333333a341.333333 341.333333 0 1 1-341.333334 341.333334 341.333333 341.333333 0 0 1 341.333334-341.333334m0-85.333333a426.666667 426.666667 0 1 0 426.666666 426.666667A426.666667 426.666667 0 0 0 554.666667 128z"
+                    fill="var(--routine)" p-id="3932"></path>
+            </svg> </a>
+       
+    </div>
+</div>
+
+<div class="Qc_header_slideout"> 
+    <img width="100%" height="150" class="Qc_header_slideout-image"
+        src="https://qiucode.cn/shaonv.jpg" alt="侧边栏壁纸" />
+    <div class="Qc_header_slideout-author"> <img width="50" height="50" class="avatar"
+            src="https://thirdqq.qlogo.cn/g?b=qq&nk=687778&s=100" alt="博主昵称" />
+        <div class="info"> <a class="link" href="https://qiucode.cn" target="_blank"
+                rel="noopener noreferrer nofollow">John</a>
+            <p class="motto Qc_motto"></p>
+        </div>
+    </div>
+    <ul class="Qc_header_slideout-count"> </ul>
+    <ul class="Qc_header_slideout-menu panel-box">
+        <li> <a class="link" href="https://qiucode.cn/" title="首页"> <span><i class="iconfont icon-A131"></i>
+                    首页</span> </a> </li>
+        <li> <a class="link panel" href="#" rel="nofollow"> <span><i class="iconfont icon-A129"></i> 分类</span>
+                <svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="13"
+                    height="13">
+                    <path
+                        d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z" />
+                </svg> </a>
+            <ul class="slides panel-body panel-box">
+                <li>
+                    <div class="link panel "> <a href="https://qiucode.cn/category/default/" title="日常分享">日常分享</a>
+                        <svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="13"
+                            height="13">
+                            <path
+                                d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z" />
+                        </svg> </div>
+                    <ul class="slides panel-body">
+                        <li><a class="link " href="https://qiucode.cn/category/wmfx/" title="外贸分享">外贸分享</a></li>
+                        <li><a class="link " href="https://qiucode.cn/category/wztj/" title="网站推荐">网站推荐</a></li>
+                        <li><a class="link " href="https://qiucode.cn/category/yxxg/" title="游戏相关">游戏相关</a></li>
+                    </ul>
+                </li>
+                <li><a class="link " href="https://qiucode.cn/category/xitong/" title="系统相关">系统相关</a></li>
+                <li>
+                    <div class="link panel "> <a href="https://qiucode.cn/category/wangzhan/"
+                            title="网站文档">网站文档</a> <svg class="icon" viewBox="0 0 1024 1024"
+                            xmlns="http://www.w3.org/2000/svg" width="13" height="13">
+                            <path
+                                d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z" />
+                        </svg> </div>
+                    <ul class="slides panel-body">
+                        <li><a class="link " href="https://qiucode.cn/category/bkfx/" title="博客分享">博客分享</a></li>
+                        <li><a class="link " href="https://qiucode.cn/category/wzym/" title="网站源码">网站源码</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="link panel "> <a href="https://qiucode.cn/category/ruanjian/"
+                            title="软件分享">软件分享</a> <svg class="icon" viewBox="0 0 1024 1024"
+                            xmlns="http://www.w3.org/2000/svg" width="13" height="13">
+                            <path
+                                d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z" />
+                        </svg> </div>
+                    <ul class="slides panel-body">
+                        <li><a class="link " href="https://qiucode.cn/category/sjrj/" title="📱手机软件">📱手机软件</a>
+                        </li>
+                        <li><a class="link " href="https://qiucode.cn/category/dnrj/" title="💻电脑软件">💻电脑软件</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li> <a class="link panel" href="#" rel="nofollow"> <span><i class="iconfont icon-A3"></i> 页面</span>
+                <svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="13"
+                    height="13">
+                    <path
+                        d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z" />
+                </svg> </a>
+            <ul class="slides panel-body">
+                <li><a class="link " href="https://qiucode.cn/sn.html" title="我的记录">我的记录</a></li>
+                <li><a class="link " href="https://qiucode.cn/youlian.html" title="友情链接">友情链接</a></li>
+                <li><a class="link " href="https://qiucode.cn/site.html" title="站点统计">站点统计</a></li>
+                <li><a class="link " href="https://qiucode.cn/Aboutme.html" title="关于我">关于我</a></li>
+            </ul>
+        </li>
+    </ul>
+    <ul class="Qc_header_slideout-menu panel-box" style="margin-top: 15px;margin-bottom: 100px;">
+        <li> <a class="link panel" href="#" rel="nofollow"> <span><i class="iconfont icon-A17"></i> 用户登录</span>
+                <svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="13"
+                    height="13">
+                    <path
+                        d="M624.865 512.247L332.71 220.088c-12.28-12.27-12.28-32.186 0-44.457 12.27-12.28 32.186-12.28 44.457 0l314.388 314.388c12.28 12.27 12.28 32.186 0 44.457L377.167 848.863c-6.136 6.14-14.183 9.211-22.228 9.211s-16.092-3.071-22.228-9.211c-12.28-12.27-12.28-32.186 0-44.457l292.155-292.16z">
+                    </path>
+                </svg> </a>
+            <ul class="slides panel-body">
+                <li> <a class="link" href="https://qiucode.cn/admin/login.php" target="_blank"
+                        rel="noopener noreferrer nofollow">登录</a> <a class="link"
+                        href="https://qiucode.cn/admin/register.php" target="_blank"
+                        rel="noopener noreferrer nofollow">注册</a> </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<div class="Qc_header_mask"></div>
+
+<script>
+
+    let sideBtn = document.querySelector(".Qc_header_above .Qc_container .Qc_header_above-slideicon")
+
+    sideBtn.addEventListener("click", () => {
+        document.querySelector(".Qc_header_slideout").classList.add("active")
+        document.querySelector(".Qc_header_mask").classList.add("active")
+    })
+
+    let maskBtn = document.querySelector(".Qc_header_mask")
+
+    maskBtn.addEventListener("click",() => {
+        document.querySelector(".Qc_header_slideout").classList.remove("active")
+        maskBtn.classList.remove("active")
+    })
+
+   
+    
+
+</script></header>
+	
+	<div class="Qc_container showInUp">
+
+
+
+<div class="Qc_main Qc_post">
+    <div class="Qc_detail">
+        <h1 class="title Qc_psot_title"> ProxySQL 一篇文章搞定</h1>
+        <div class="Qc_detail_category"> </div>
+        <article class="Qc_detail_article" id="article-container">
+            <p>ProxySql.md</p>
+<h1 id="proxysql">ProxySQL</h1>
+<table>
+<thead>
+<tr>
+<th>编写人</th>
+<th>编写时间</th>
+<th>编写说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>章瀚中</td>
+<td>2020-9-12</td>
+<td>接上一篇<a href="http://wiki-private.capitalonline.net:8090/pages/viewpage.action?pageId=59474716">Mysql5.7主从搭建</a>一起观看较佳</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>简单介绍: ProxySQL 是基于 MySQL 的一款开源的中间件的产品，是一个灵活的 MySQL 代理层，可以实现读写分离，支持 Query 路由功能，支持动态指定某个 SQL 进行缓存，支持动态加载（无需重启 ProxySQL 服务），故障切换和一些 SQL 的过滤功能。</p>
+<p>github地址：https://github.com/sysown/proxysql/releases</p>
+<p>官方文档: <a href="https://proxysql.com/documentation/">https://proxysql.com/documentation/</a></p>
+<h2 id="下载与安装">下载与安装</h2>
+<h3 id="ubuntu">Ubuntu</h3>
+<blockquote>
+<h4 id="下载">下载</h4>
+<p><code>wget  https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql_2.0.14-dbg-ubuntu16_amd64.deb </code></p>
+<h4 id="安装">安装</h4>
+<p><code>dpkg -i proxysql_2.0.14-dbg-ubuntu16_amd64.deb</code></p>
+</blockquote>
+<h3 id="centos8">Centos8</h3>
+<blockquote>
+<h4 id="下载-1">下载</h4>
+<p>wget <a href="https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql-2.0.14-1-dbg-centos8.x86_64.rpm">https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql-2.0.14-1-dbg-centos8.x86_64.rpm</a></p>
+<h4 id="安装-1">安装</h4>
+<p><code> yum -y install proxysql-2.0.14-1-centos8.x86_64.rpm</code></p>
+</blockquote>
+<p>centos7 : <a href="https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql-2.0.14-1-centos7.x86_64.rpm">https://github.com/sysown/proxysql/releases/download/v2.0.14/proxysql-2.0.14-1-centos7.x86_64.rpm</a></p>
+<h2 id="启动">启动</h2>
+<p>启动：<code>systemctl restart proxysql</code></p>
+<p>停止:  <code>systemctl stop proxysql</code></p>
+<p>默认监听 <code>6032</code> 和 <code>6033</code> 端口,<code>6032 </code>是 ProxySQL 的管理端口号，<code>6033</code>是对外服务的端口号
+ProxySQL 的用户名和密码都是默认的 <code>admin</code>。</p>
+<h2 id="登录">登录</h2>
+<p>需要有mysql的客户端</p>
+<pre tabindex="0"><code>[root@localhost proxysql]# mysql -u admin -padmin -h 127.0.0.1 -P 6032 --prompt=&#39;ProxySQL-Admin&gt;  &#39;
+
+ProxySQL-Admin&gt;  show databases;
++-----+---------------+-------------------------------------+
+| seq | name          | file                                |
++-----+---------------+-------------------------------------+
+| 0   | main          |  内存配置数据库，即 MEMORY，表里存放后端 db 实例、用户验证、路由规则等信息。   |
+| 2   | disk          | /var/lib/proxysql/proxysql.db 持久化的磁盘的配置       |
+| 3   | stats         |   统计信息的汇总           |
+| 4   | monitor       | 一些监控的收集信息，比如数据库的健康状态等  |
+| 5   | stats_history | /var/lib/proxysql/proxysql_stats.db这个库是 ProxySQL 收集的有关其内部功能的历史指标 |
++-----+---------------+-------------------------------------+
+5 rows in set (0.00 sec)
+</code></pre><p>note: If your MySQL client version is version 8.04 or higher add <code>--default-auth=mysql_native_password</code> to the above command to connect to the admin interface.</p>
+<p>这里面有5个数据库</p>
+<p>main: 内存配置数据库，即 MEMORY，表里存放后端 db 实例、用户验证、路由规则等信息。</p>
+<pre tabindex="0"><code>ProxySQL-Admin&gt;  use main
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+ProxySQL-Admin&gt;  show tables;
++----------------------------------------------------+
+| tables                                             |
++----------------------------------------------------+
+| global_variables                                   |
+| mysql_aws_aurora_hostgroups                        |
+| mysql_collations                                   |
+| mysql_firewall_whitelist_rules                     |
+| mysql_firewall_whitelist_sqli_fingerprints         |
+| mysql_firewall_whitelist_users                     |
+| mysql_galera_hostgroups                            |
+| mysql_group_replication_hostgroups                 |
+| mysql_query_rules指定 Query 路由到后端不同服务器的规则列表|
+| mysql_query_rules_fast_routing                     |
+| mysql_replication_hostgroups 配置主从分组信息         |
+| mysql_servers后端可以连接 MySQL 服务器的列表            |
+| mysql_users配置后端数据库的账号和监控的账号。             |
+| proxysql_servers                                   |
+| restapi_routes                                     |
+| runtime_checksums_values                           |
+| runtime_global_variables                           |
+| runtime_mysql_aws_aurora_hostgroups                |
+| runtime_mysql_firewall_whitelist_rules             |
+| runtime_mysql_firewall_whitelist_sqli_fingerprints |
+| runtime_mysql_firewall_whitelist_users             |
+| runtime_mysql_galera_hostgroups                    |
+| runtime_mysql_group_replication_hostgroups         |
+| runtime_mysql_query_rules                          |
+| runtime_mysql_query_rules_fast_routing             |
+| runtime_mysql_replication_hostgroups               |
+| runtime_mysql_servers                              |
+| runtime_mysql_users                                |
+| runtime_proxysql_servers                           |
+| runtime_restapi_routes                             |
+| runtime_scheduler                                  |
+| scheduler                                          |
++----------------------------------------------------+
+32 rows in set (0.00 sec)
+</code></pre><p><strong>注意</strong>： 表名以 runtime_开头的表示 ProxySQL 当前运行的配置内容，不能通过 DML 语句修改。</p>
+<p>只能修改对应的不以 runtime 开头的表，然后 “LOAD” 使其生效，“SAVE” 使其存到硬盘以供下次重启加载。</p>
+<h2 id="多层的配置系统">多层的配置系统</h2>
+<p><img src="C:%5CUsers%5CAdministrator%5CDesktop%5C1033265-20200210150442128-1932198210.png" alt=""></p>
+<p>整套配置系统分为三层：顶层为 RUNTIME ,中间层为 MEMORY , 底层也就是持久层 DISK 和 CONFIG FILE 。</p>
+<p>RUNTIME ： 代表 ProxySQL 当前生效的正在使用的配置，无法直接修改这里的配置，必须要从下一层 “load” 进来。
+MEMORY： MEMORY 层上面连接 RUNTIME 层，下面连接持久层。这层可以正常操作 ProxySQL  配置，随便修改，不会影响生产环境。修改一个配置一般都是现在 MEMORY 层完成的，确认正常之后在加载达到 RUNTIME 和 持久化的磁盘上。</p>
+<p>DISK 和 CONFIG FILE：持久化配置信息，重启后内存中的配置信息会丢失，所需要将配置信息保留在磁盘中。重启时，可以从磁盘快速加载回来。</p>
+<p>一般在内存那层修改 ,然后保存到运行系统，保存到磁盘数据库系统</p>
+<pre tabindex="0"><code>load xxx to runtime;
+save xxx to disk;
+</code></pre><ul>
+<li>proxysql 启动时，首先去找/etc/proxysql.cnf 找到它的datadir,如果datadir下有proxysql.db 就加载proxysql.db的配置</li>
+<li>如果启动proxysql时带有<code>--init</code>标志，会用/etc/proxsql.cnf的配置，把Runtime，disk全部初始化一下</li>
+<li>在调用是调用<code>--reload</code> 会把/etc/proxysql.cnf 和disk 中配置进行合并。如果冲突需要用户干预。disk会覆盖config file。</li>
+</ul>
+<h2 id="配置主从分组信息">配置主从分组信息</h2>
+<p>配置主从分组信息</p>
+<pre tabindex="0"><code>
+ProxySQL-Admin&gt;  show create table mysql_replication_hostgroups\G;
+*************************** 1. row ***************************
+       table: mysql_replication_hostgroups
+Create Table: CREATE TABLE mysql_replication_hostgroups (
+    writer_hostgroup INT CHECK (writer_hostgroup&gt;=0) NOT NULL PRIMARY KEY,
+    reader_hostgroup INT NOT NULL CHECK (reader_hostgroup&lt;&gt;writer_hostgroup AND reader_hostgroup&gt;=0),
+    check_type VARCHAR CHECK (LOWER(check_type) IN (&#39;read_only&#39;,&#39;innodb_read_only&#39;,&#39;super_read_only&#39;,&#39;read_only|innodb_read_only&#39;,&#39;read_only&amp;innodb_read_only&#39;)) NOT NULL DEFAULT &#39;read_only&#39;,
+    comment VARCHAR NOT NULL DEFAULT &#39;&#39;, UNIQUE (reader_hostgroup))
+1 row in set (0.00 sec)
+</code></pre><p>首先创建写组和读组</p>
+<p><code>insert ``into</code> <code>mysql_replication_hostgroups ( writer_hostgroup, reader_hostgroup, comment) values (10,20,``'proxy'``);</code></p>
+<p>确保此配置均已写入三种配置</p>
+<pre tabindex="0"><code>ProxySQL-Admin&gt;  select * from main.mysql_replication_hostgroups;
++------------------+------------------+------------+---------+
+| writer_hostgroup | reader_hostgroup | check_type | comment |
++------------------+------------------+------------+---------+
+| 10               | 20               | read_only  | proxy   |
++------------------+------------------+------------+---------+
+1 row in set (0.00 sec)
+
+ProxySQL-Admin&gt;  select * from main.runtime_mysql_replication_hostgroups;
+Empty set (0.00 sec)
+
+ProxySQL-Admin&gt;  load mysql servers to runtime;
+Query OK, 0 rows affected (0.00 sec)
+
+ProxySQL-Admin&gt;  select * from main.runtime_mysql_replication_hostgroups;
++------------------+------------------+------------+---------+
+| writer_hostgroup | reader_hostgroup | check_type | comment |
++------------------+------------------+------------+---------+
+| 10               | 20               | read_only  | proxy   |
++------------------+------------------+------------+---------+
+1 row in set (0.00 sec)
+
+ProxySQL-Admin&gt;  use disk
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+ProxySQL-Admin&gt;  select * from disk.mysql_replication_hostgroups;
+Empty set (0.00 sec)
+
+ProxySQL-Admin&gt;  save mysql servers to disk
+    -&gt; ;
+Query OK, 0 rows affected (0.02 sec)
+
+ProxySQL-Admin&gt;  select * from disk.mysql_replication_hostgroups;
++------------------+------------------+------------+---------+
+| writer_hostgroup | reader_hostgroup | check_type | comment |
++------------------+------------------+------------+---------+
+| 10               | 20               | read_only  | proxy   |
++------------------+------------------+------------+---------+
+1 row in set (0.00 sec)
+
+ProxySQL-Admin&gt; 
+</code></pre><p><strong>ProxySQL 会根据server 的read _only 的取值将服务器进行分组。 read_only=0 的server，master被分到编号为10的写组，read_only=1 的server，slave则被分到编号20的读组</strong></p>
+<h2 id="将个服务器添加到mysql_server表">将个服务器添加到mysql_server表</h2>
+<pre tabindex="0"><code>ProxySQL-Admin&gt;  show create table mysql_servers\G;
+*************************** 1. row ***************************
+       table: mysql_servers
+Create Table: CREATE TABLE mysql_servers (
+    hostgroup_id INT CHECK (hostgroup_id&gt;=0) NOT NULL DEFAULT 0,
+    hostname VARCHAR NOT NULL,
+    port INT CHECK (port &gt;= 0 AND port &lt;= 65535) NOT NULL DEFAULT 3306,
+    gtid_port INT CHECK ((gtid_port &lt;&gt; port OR gtid_port=0) AND gtid_port &gt;= 0 AND gtid_port &lt;= 65535) NOT NULL DEFAULT 0,
+    status VARCHAR CHECK (UPPER(status) IN (&#39;ONLINE&#39;,&#39;SHUNNED&#39;,&#39;OFFLINE_SOFT&#39;, &#39;OFFLINE_HARD&#39;)) NOT NULL DEFAULT &#39;ONLINE&#39;,
+    weight INT CHECK (weight &gt;= 0 AND weight &lt;=10000000) NOT NULL DEFAULT 1,
+    compression INT CHECK (compression IN(0,1)) NOT NULL DEFAULT 0,
+    max_connections INT CHECK (max_connections &gt;=0) NOT NULL DEFAULT 1000,
+    max_replication_lag INT CHECK (max_replication_lag &gt;= 0 AND max_replication_lag &lt;= 126144000) NOT NULL DEFAULT 0,
+    use_ssl INT CHECK (use_ssl IN(0,1)) NOT NULL DEFAULT 0,
+    max_latency_ms INT UNSIGNED CHECK (max_latency_ms&gt;=0) NOT NULL DEFAULT 0,
+    comment VARCHAR NOT NULL DEFAULT &#39;&#39;,
+    PRIMARY KEY (hostgroup_id, hostname, port) )
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
+</code></pre><p>使用下面的语句依次插入我们刚刚搭建好的的机器（注意写入组还是读取组的区分）</p>
+<pre tabindex="0"><code>insert into mysql_servers(hostgroup_id,hostname,port,comment) values (10,&#39;xxx.xxx.xxx.xxx&#39;,3306,&#34;说明&#34;);
+</code></pre><p><strong>将信息同步到runtime和disk</strong></p>
+<pre tabindex="0"><code>load mysql servers to runtime;
+save mysql servers to disk;
+</code></pre><p>主要通过下面三句话精选验证</p>
+<pre tabindex="0"><code> select * from disk.mysql_servers;
+ select * from runtime_mysql_servers;
+ select * from main.mysql_servers;
+</code></pre><p>注意观察<code> select * from mysql_servers;</code>时<code>status</code>列全为<code>ONLINE</code>即可。</p>
+<pre tabindex="0"><code> +--------------+-----------------+------+-----------+--------+--------+-------------+-----------------+---------------------+---------+----------------+---------------------------+
+| hostgroup_id | hostname        | port | gtid_port | status | weight | compression | max_connections | max_replication_lag | use_ssl | max_latency_ms | comment                   |
++--------------+-----------------+------+-----------+--------+--------+-------------+-----------------+---------------------+---------+----------------+---------------------------+
+| 10           | xxx.xxx.xxx.114 | 3306 | 0         | ONLINE | 1      | 0           | 1000            | 0                   | 0       | 0              | 第一次测试的主机          |
+| 20           | xxx.xxx.xxx.118 | 3306 | 0         | ONLINE | 1      | 0           | 1000            | 0                   | 0       | 0              | 第一次测试的从机1         |
+| 20           | xxx.xxx.xxx.115 | 3306 | 0         | ONLINE | 1      | 0           | 1000            | 0                   | 0       | 0              | 第一次测试的从机2         |
++--------------+-----------------+------+-----------+--------+--------+-------------+-----------------+---------------------+---------+----------------+---------------------------+
+3 rows in set (0.00 sec)
+</code></pre><h2 id="proxysql-监控后端节点">ProxySQL 监控后端节点</h2>
+<p>为 ProxySQL 配置监控账号</p>
+<pre tabindex="0"><code>
+ProxySQL-Admin&gt;  set mysql-monitor_username=&#39;monitor&#39;;
+Query OK, 1 row affected (0.00 sec)
+
+ProxySQL-Admin&gt;  set mysql-monitor_password=&#39;Mm-123456&#39;;
+Query OK, 1 row affected (0.00 sec)
+
+ProxySQL-Admin&gt;  load mysql variables to runtime;
+Query OK, 0 rows affected (0.00 sec)
+
+ProxySQL-Admin&gt;  save mysql variables to disk;
+Query OK, 136 rows affected (0.00 sec)
+</code></pre><p>在 mysql主从 的master节点进行设置账号密码</p>
+<pre tabindex="0"><code>mysql&gt; create user &#39;monitor&#39;@&#39;%&#39; identified by &#39;Mm-123456&#39;;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; grant all privileges on *.* to &#39;monitor&#39;@&#39;%&#39;;
+Query OK, 0 rows affected (0.00 sec)
+</code></pre><p>验证监控信息，ProxySQL 监控模块的指标都保存在<code>monitor库的log表中</code></p>
+<pre tabindex="0"><code>连接：select * from monitor.mysql_server_connect_log;
+稍等一会 结果出现 connect_error 列出现 NULL 即可
+心跳检测ping：select * from mysql_server_ping_log limit 10;
+readonly:select * from mysql_server_read_only_log limit 10;
+</code></pre><h2 id="配置proxy">配置proxy</h2>
+<p>SQL 请求所使用的用户配置，都需要再Mysql节点创建上。</p>
+<p>​	创建proxysql 对外访问的账户(master)</p>
+<pre tabindex="0"><code>mysql&gt; create user &#39;proxysql&#39;@&#39;这里是proxy的ip&#39; identified by &#39;Proxy-123456&#39;;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql&gt; grant all privileges on *.* to &#39;proxysql&#39;@&#39;这里是proxy的ip&#39; with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; flush privileges;
+Query OK, 0 rows affected (0.01 sec)
+</code></pre><p>在ProxySQL中需要设置的表是</p>
+<pre tabindex="0"><code>ProxySQL-Admin&gt;  show create table mysql_users\G;
+*************************** 1. row ***************************
+       table: mysql_users
+Create Table: CREATE TABLE mysql_users (
+    username VARCHAR NOT NULL,
+    password VARCHAR,
+    active INT CHECK (active IN (0,1)) NOT NULL DEFAULT 1,
+    use_ssl INT CHECK (use_ssl IN (0,1)) NOT NULL DEFAULT 0,
+    default_hostgroup INT NOT NULL DEFAULT 0,  #默认路由目标
+    default_schema VARCHAR,
+    schema_locked INT CHECK (schema_locked IN (0,1)) NOT NULL DEFAULT 0,
+    transaction_persistent INT CHECK (transaction_persistent IN (0,1)) NOT NULL DEFAULT 1,
+    fast_forward INT CHECK (fast_forward IN (0,1)) NOT NULL DEFAULT 0,
+    backend INT CHECK (backend IN (0,1)) NOT NULL DEFAULT 1,
+    frontend INT CHECK (frontend IN (0,1)) NOT NULL DEFAULT 1,
+    max_connections INT CHECK (max_connections &gt;=0) NOT NULL DEFAULT 10000,
+    comment VARCHAR NOT NULL DEFAULT &#39;&#39;,
+    PRIMARY KEY (username, backend),
+    UNIQUE (username, frontend))
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
+</code></pre><p>我们将在<code>master</code>上设置用于<code>proxy</code>访问的账户插入到<code>ProxySql</code>的<code>mysql_users</code>表中</p>
+<pre tabindex="0"><code>ProxySQL-Admin&gt;  insert into mysql_users(username,password,default_hostgroup) values(&#39;proxysql&#39;,&#39;Proxy-123456&#39;,10);
+Query OK, 1 row affected (0.00 sec)
+ProxySQL-Admin&gt;  load mysql users to runtime;
+Query OK, 0 rows affected (0.00 sec)
+
+ProxySQL-Admin&gt;  save mysql users to disk;
+Query OK, 0 rows affected (0.01 sec)
+</code></pre><pre tabindex="0"><code>ProxySQL-Admin&gt;  select * from mysql_users\G;
+*************************** 1. row ***************************
+              username: proxysql
+              password: Proxy-123456
+                active: 1
+               use_ssl: 0
+     default_hostgroup: 10
+        default_schema: NULL
+         schema_locked: 0
+transaction_persistent: 1
+          fast_forward: 0
+               backend: 1
+              frontend: 1
+       max_connections: 10000
+               comment: 
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
+</code></pre><p>此时可以在有权限登录的机器用proxysql账户登录创建库调试看看。</p>
+<p>忘记自己登录到那个服务可以用<code> select @@server_id;</code>查看所在机器。</p>
+<h3 id="配置读写分离">配置读写分离</h3>
+<h4 id="路由规则">路由规则</h4>
+<p>路由规则配置非常灵活，可以基于schema，也可以基于用户，或单个sql语句实现路由定制。</p>
+<p>【<strong>实际过程中应该从手机的慢日志各项指标中找出压力大，执行频繁的语句单独写路由规则和缓存，建议使用hash code 值做读写纹理，不要建太多规则</strong>】</p>
+<p>mysql_query_rules_fast_routing是mysql_query_rules</p>
+<p>介绍一下改表mysql_query_rules的几个字段：
+<code>active</code>：是否启用这个规则，1表示启用，0表示禁用
+<code>match_pattern</code> 字段就是代表设置规则
+<code>destination_hostgroup</code> 字段代表默认指定的分组，
+<code>apply</code> 代表真正执行应用规则。</p>
+<h4 id="规则的写入">规则的写入</h4>
+<p>ProxySQL 是根据<code>rule_id</code>的顺序来进行规则匹配的注意规则的编写顺序</p>
+<p>所有以select 开头的语句全部分配到读组中，上面建立读组编号是20</p>
+<p><code>insert into mysql_query_rules(rule_id,active,match_pattern,destination_hostgroup,apply) values (2,1,'^select',20,1);</code></p>
+<p>说有以insert开头的语句全部分配到写组中</p>
+<p><code>insert into mysql_query_rules(rule_id,active,match_pattern,destination_hostgroup,apply) values (1,1,'^SELECT.*FOR UPDATE$',10,1);</code></p>
+<p><code>insert into mysql_query_rules(rule_id,active,match_pattern,destination_hostgroup,apply) values (3,1,'^insert',10,1);</code></p>
+<p>注意要</p>
+<pre tabindex="0"><code>load mysql query rules to runtime;
+save mysql query rules to disk;
+</code></pre><h4 id="读写分离测试">读写分离测试</h4>
+<p>在ProxySQL的主机上运行</p>
+<h5 id="测试读">测试读</h5>
+<pre tabindex="0"><code>mysql -uproxysql -pProxy-123456 -h 127.0.0.1 -P 6033 -e &#34;select @@server_id&#34;;
+可以返回正确的server_id即可，因为我的后台是俩台只读机器，所以会交替出现访问俩台机器的server_id;
+
+
+mysql&gt; select @@server_id for update;  此语句SELECT...FOR UPDATE 会申请写锁，所以用在这里比较合适。
++-------------+
+| @@server_id |
++-------------+
+|         114 |
++-------------+
+1 row in set (0.00 sec)
+</code></pre><h5 id="测试写">测试写</h5>
+<pre tabindex="0"><code>mysql -uproxysql -pProxy-123456 -h 127.0.0.1 -P 6033 登录后
+mysql&gt; begin;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; insert into hanzhongtest.edu_user values(9,&#34;测试写3&#34;,&#34;wahah&#34;);
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; select @@server_id;
++-------------+
+| @@server_id |
++-------------+
+|         114 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql&gt; commit;
+Query OK, 0 rows affected (0.00 sec)
+</code></pre><h4 id="查看路由信息">查看路由信息</h4>
+<p>使用admin账号登录ProxySQL</p>
+<pre tabindex="0"><code>[root@localhost proxysql]# mysql -u admin -padmin -h 127.0.0.1 -P 6032 --prompt=&#39;ProxySQL-Admin&gt;  &#39;
+
+
+ProxySQL-Admin&gt;  SELECT hostgroup hg,
+    -&gt;               sum_time,
+    -&gt;               count_star,
+    -&gt;               digest_text 
+    -&gt;        FROM stats_mysql_query_digest
+    -&gt;        ORDER BY sum_time DESC;
++----+----------+------------+-------------------------------------------------------+
+| hg | sum_time | count_star | digest_text                                           |
++----+----------+------------+-------------------------------------------------------+
+| 20 | 83455    | 70         | select @@server_id                                    |
+| 10 | 4383     | 2          | commit                                                |
+| 10 | 1275     | 2          | insert into hanzhongtest.edu_user values(?,?,?)       |
+| 10 | 1205     | 1          | start transantion                                     |
+| 20 | 1015     | 1          | select * from stats_mysql_query_digest                |
+| 10 | 798      | 2          | begin insert into hanzhongtest.edu_user values(?,?,?) |
+| 10 | 792      | 2          | begin                                                 |
+| 10 | 454      | 1          | select @@server_id                                    |
+| 10 | 0        | 71         | select @@version_comment limit ?                      |
++----+----------+------------+-------------------------------------------------------+
+9 rows in set (0.00 sec)
+</code></pre><h3 id="总结">总结：</h3>
+<p>路由规则比较灵活需要多看<a href="https://github.com/sysown/proxysql/wiki">官方文档</a></p>
+<p>利用ProxySQL读写分离可以降低主库的压力，但是当主库宕机后集群将不能再写。所以需要replication manager实现高可用的协助。</p>
+<p>其次需要实验对于<code>mysql galera cluster</code>的读写分离和负载。</p>
+<h4 id="遇到的问题">遇到的问题</h4>
+<p>1.建立账户是访问IP应明确</p>
+<p>2.firewalld 实验的时候要不关掉，要不写规则开放端口。</p>
+<h2 id="proxysql-的高可用">ProxySql 的高可用</h2>
+<table>
+<thead>
+<tr>
+<th>编写人</th>
+<th>编写时间</th>
+<th>编写说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>章瀚中</td>
+<td>2020-9-12</td>
+<td>接上一篇[proxysql 读写分离](<a href="http://wiki-private.capitalonline.net:8090/pages/viewpage.action?pageId=59474862">ProxySQL 读写分离</a>)一起观看较佳</td>
+</tr>
+</tbody>
+</table>
+<p>有两个组件实现了ProxySQL集群</p>
+<ul>
+<li>
+<p><strong>monitoring(集群监控组件)</strong></p>
+</li>
+<li>
+<p><strong>re-configuration(远程配置)</strong></p>
+<p>俩组件都有4张表</p>
+<p><strong>-</strong> mysql_query_rules
+<strong>-</strong> mysql_servers
+<strong>-</strong> mysql_users
+<strong>-</strong> proxysql_servers</p>
+</li>
+</ul>
+<h3 id="相关变量">相关变量</h3>
+<p>Admin variables ：使用<code>load admin variables to runtime</code>使其生效</p>
+<h4 id="1用于同步的变量">1.用于同步的变量</h4>
+<pre><code>- `admin-checksum_mysql_query_rules` boolean 变量，默认ture，当使用`load mysql query rules to runtime`时，会生成新的配置校验码。如果是false 新的配置不会自动广播和同步远端数据。
+- `admin-checksum_mysql_servers` 布尔类型，默认ture `load mysql servers to runtime` 同上
+- `admin-chechsum_mysql_users`布尔类型，默认ture `load mysql users to runtime`,同上，但是用户有数百万，为了不影响性能就要设置为false。
+</code></pre>
+<h4 id="2集群凭证变量">2.集群凭证变量</h4>
+<ul>
+<li><code>admin-cluster_username</code></li>
+<li><code>admin-cluser_password</code></li>
+</ul>
+<p>这是用于监控其他ProxySQL实例 ，这俩个变量需要再<code>admin-admin_credentials</code>中存在。</p>
+<h4 id="3检查频率和间隔时间">3.检查频率和间隔时间</h4>
+<ul>
+<li><code>admin-cluster_check_interval_ms</code>这个变量定义了检查chechsums的时间，默认1000,最小10，最大 300000.</li>
+<li><code>admin-cluster_check_status_frequency</code>定义了多少次checksums检查就验证一次连接性。</li>
+</ul>
+<h4 id="4将配置同步到磁盘">4.将配置同步到磁盘</h4>
+<p>在远程同步配置之后，通常最好的做法是立即将新的更改保存到磁盘。这样重启时，更改的配置不会丢失。
+<strong>-</strong> <code>admin-cluster_mysql_query_rules_save_to_disk</code>
+<strong>-</strong> <code>admin-cluster_mysql_servers_save_to_disk</code>
+<strong>-</strong> <code>admin-cluster_mysql_users_save_to_disk</code>
+<strong>-</strong> <code>admin-cluster_proxysql_servers_save_to_disk</code></p>
+<p>这几个变量都是布尔值。当设置为true(默认值)时，在远程同步并load到runtime后，新的mysql_query_rules、mysql_servers、mysql_users、proxysql_servers配置会持久化到磁盘中。</p>
+<h4 id="5是否需要远程同步变量">5.是否需要远程同步变量</h4>
+<p>由于某些原因，可能多个ProxySQL实例会在同一时间进行重新配置。
+例如，每个ProxySQL实例都在监控MySQL的replication，且自动探测到MySQL的故障转移，在一个极短的时间内(可能小于1秒)，这些ProxySQL实例可能会自动调整新的配置，而无需通过其它ProxySQL实例来同步新配置。</p>
+<p>类似的还有，当所有ProxySQL实例都探测到了和某实例的临时的网络问题，或者某个MySQL节点比较慢(replication lag,  拖后腿)，这些ProxySQL实例都会自动地避开这些节点。这时各ProxySQL实例也无需从其它节点处同步配置，而是同时自动完成新的配置。</p>
+<p>配置ProxySQL集群，让各ProxySQL实例暂时无需从其它实例处同步某些配置，而是等待一定次数的检查之后，再触发远程同步。但是，如果本地和远程节点的这些变量阈值不同，则还是会触发远程同步。</p>
+<p><strong>-</strong> <code>admin-cluster_mysql_query_rules_diffs_before_sync</code>
+<strong>-</strong> <code>admin-cluster_mysql_servers_diffs_before_sync</code>
+<strong>-</strong> <code>admin-cluster_mysql_users_diffs_before_sync</code>
+<strong>-</strong> <code>admin-cluster_proxysql_servers_diffs_before_sync</code></p>
+<p>分别定义经过多少次的&quot;无法匹配&quot;检查之后，触发mysql_query_rules、mysql_servers、mysql_users、proxysql_servers配置的远程同步。默认值3次，最小值0，表示永不远程同步，最大值1000。</p>
+<p>比如各实例监控mysql_servers配置并做校验码检查，如果某实例和本地配置不同，当多次检测到都不同时，将根据load to runtime的时间戳决定是否要从远端将mysql_servers同步到本地。</p>
+<h4 id="6延迟同步">6.延迟同步</h4>
+<p>ProxySQL Cluster 可以定义达到多少个checksum 不同之后，才在集群内部进行配置同步。
+query rules, servers, users 和proxysql servers 分别有admin-cluster_XXX_diffs_before_sync 相关的参数，取值范围0 ～ 1000，0 代表从不同步。默认3。</p>
+<h3 id="需要配置的表">需要配置的表</h3>
+<h4 id="1proxysql_servers">1.proxysql_servers</h4>
+<p>定义proxyssql集群中有哪些实例，可以在线insert，也可以修改配置文件。</p>
+<pre tabindex="0"><code>ProxySQL-Admin&gt;  show create table proxysql_servers;
++------------------+--------------------------
+| table            | Create Table            |
++------------------+--------------------------
+| proxysql_servers | CREATE TABLE proxysql_servers (
+    hostname VARCHAR NOT NULL,
+    port INT NOT NULL DEFAULT 6032,
+    weight INT CHECK (weight &gt;= 0) NOT NULL DEFAULT 0,
+    comment VARCHAR NOT NULL DEFAULT &#39;&#39;,
+    PRIMARY KEY (hostname, port) ) |
++------------------+--------------------------
+1 row in set (0.00 sec)
+</code></pre><p>ProxySQL只有在磁盘数据库文件不存在，或者使用了&ndash;initial选项时才会读取传统配置文件。</p>
+<h4 id="2runtime_proxysql_servers">2.runtime_proxysql_servers</h4>
+<p>正如其它runtime_表一样，runtime_proxysql_servers表和proxysql_servers的结构完全一致，只不过它是runtime数据结构中的配置，也就是当前正在生效的配置。该表的定义语句如下：</p>
+<pre tabindex="0"><code>| runtime_proxysql_servers | CREATE TABLE runtime_proxysql_servers (
+    hostname VARCHAR NOT NULL,
+    port INT NOT NULL DEFAULT 6032,
+    weight INT CHECK (weight &gt;= 0) NOT NULL DEFAULT 0,
+    comment VARCHAR NOT NULL DEFAULT &#39;&#39;,
+    PRIMARY KEY (hostname, port) ) |
+</code></pre><h4 id="3runtime_checksums_values">3.runtime_checksums_values</h4>
+<p>这个不是基于内存的。用于 load to runtime时的信息。</p>
+<pre tabindex="0"><code>| runtime_checksums_values | CREATE TABLE runtime_checksums_values (
+    name VARCHAR NOT NULL,
+    version INT NOT NULL,
+    epoch INT NOT NULL,
+    checksum VARCHAR NOT NULL,
+    PRIMARY KEY (name)) |
+</code></pre><p>- name：模块的名称
+- version：执行了多少次load to runtime操作，包括所有隐式和显式执行的(某些事件会导致ProxySQL内部自动执行load to runtime命令)
+- epoch：最近一次执行load to runtime的时间戳
+- checksum：执行load to runtime时生成的配置校验码(checksum)</p>
+<p><strong>特别注意：</strong>  目前6个组件中只有4种模块的配置会生成对应的校验码(checksum)，不能生成的组件是：admin_variables，mysql_variables。 checnsum 只有在执行了load to run ，并且admin-checksum_XXX = true 时，才可以正常生成。即:
+- LOAD MYSQL QUERY RULES TO RUNTIME：当admin-checksum_mysql_query_rules=true时生成一个新的mysql_query_rules配置校验码
+- LOAD MYSQL SERVERS TO RUNTIME：当admin-checksum_mysql_servers=true时生成一个新的mysql_servers配置校验码
+- LOAD MYSQL USERS TO RUNTIME：当admin-checksum_mysql_users=true时生成一个新的mysql_users配置校验码
+- LOAD PROXYSQL SERVERS TO RUNTIME：总是会生成一个新的proxysql_servers配置校验码
+- LOAD ADMIN VARIABLES TO RUNTIME：不生成校验码
+- LOAD MYSQL VARIABLES TO RUNTIME：不生产校验码</p>
+<p><strong>New commands （新命令）:</strong>
+- LOAD PROXYSQL SERVERS FROM MEMORY / LOAD PROXYSQL SERVERS TO RUNTIME
+从内存数据库中加载proxysql servers配置到runtime数据结构
+- SAVE PROXYSQL SERVERS TO MEMORY / SAVE PROXYSQL SERVERS FROM RUNTIME
+将proxysql servers配置从runtime数据结构持久化保存到内存数据库中
+- LOAD PROXYSQL SERVERS TO MEMORY / LOAD PROXYSQL SERVERS FROM DISK
+从磁盘数据库中加载proxysql servers配置到内存数据库中
+- LOAD PROXYSQL SERVERS FROM CONFIG
+从传统配置文件中加载proxysql servers配置到内存数据库中
+- SAVE PROXYSQL SERVERS FROM MEMORY / SAVE PROXYSQL SERVERS TO DISK
+将proxysql servers配置从内存数据库中持久化保存到磁盘数据库中</p>
+<h3 id="stats-tables">stats tables</h3>
+<h4 id="1stats_proxysql_servers_checksums">1.stats_proxysql_servers_checksums</h4>
+<p>记录集群中各个实例的组件checksum 信息。</p>
+<pre tabindex="0"><code> show create table stats.stats_proxysql_servers_checksums;
+| stats_proxysql_servers_checksums | CREATE TABLE stats_proxysql_servers_checksums (
+    hostname VARCHAR NOT NULL,
+    port INT NOT NULL DEFAULT 6032,
+    name VARCHAR NOT NULL,
+    version INT NOT NULL,
+    epoch INT NOT NULL,
+    checksum VARCHAR NOT NULL,
+    changed_at INT NOT NULL,
+    updated_at INT NOT NULL,
+    diff_check INT NOT NULL,
+    PRIMARY KEY (hostname, port, name) ) |
+</code></pre><p>各字段意义如下：
+- hostname：ProxySQL实例的主机名
+- port：ProxySQL实例的端口
+- name：对端runtime_checksums_values中报告的模块名称
+- version：对端runtime_checksum_values中报告的checksum的版本
+<strong>注意</strong>，ProxySQL实例刚启动时version=1：ProxySQL实例将永远不会从version=1的实例处同步配置数据，因为一个刚刚启动的ProxyQL实例不太可能是真相的来源，这可以防止新的连接节点破坏当前集群配置
+- epoch：对端runtime_checksums_values中报告的checksum的时间戳epoch值
+- checksum：对端runtime_checksums_values中报告的checksum值
+- changed_at：探测到checksum发生变化的时间戳
+- updated_at：最近一次更新该类配置的时间戳
+- diff_check：一个计数器，用于记录探测到的对端和本地checksum值已有多少次不同
+需要等待达到阈值后，才会触发重新配置。前面已经说明，在多个ProxySQL实例同时或极短时间内同时更改配置时，可以让ProxySQL等待多次探测之后再决定是否从远端同步配置。这个字段正是用于记录探测到的配置不同次数。如果diff_checks不断增加却仍未触发同步操作，这意味着对端不是可信任的同步源，例如对端的version=1。另一方面，如果某对端节点不和ProxySQL集群中的其它实例进行配置同步，这意味着集群没有可信任的同步源。这种情况可能是因为集群中所有实例启动时的配置都不一样，它们无法自动判断哪个配置才是正确的。可以在某个节点上执行load to runtime，使该节点被选举为该类配置的可信任同步源。</p>
+<h4 id="2stats_proxysql_servers_metrics-表">2.<strong>stats_proxysql_servers_metrics 表</strong></h4>
+<pre tabindex="0"><code>show create table stats.stats_proxysql_servers_metrics;
+| stats_proxysql_servers_metrics | CREATE TABLE stats_proxysql_servers_metrics (
+    hostname VARCHAR NOT NULL,
+    port INT NOT NULL DEFAULT 6032,
+    weight INT CHECK (weight &gt;= 0) NOT NULL DEFAULT 0,
+    comment VARCHAR NOT NULL DEFAULT &#39;&#39;,
+    response_time_ms INT NOT NULL,
+    Uptime_s INT NOT NULL,
+    last_check_ms INT NOT NULL,
+    Queries INT NOT NULL,
+    Client_Connections_connected INT NOT NULL,
+    Client_Connections_created INT NOT NULL,
+    PRIMARY KEY (hostname, port) ) |
+</code></pre><p>当执行show mysql status语句时，显示一些已检索到的指标。字段意义如下：
+- hostname：ProxySQL实例主机名
+- port：ProxySQL实例端口
+- weight：报告结果同proxysql_servers.weight字段
+- comment：报告结果同proxysql_servers.comment字段
+- response_time_ms：执行show mysql status的响应时长，单位毫秒
+- Uptime_s：ProxySQL实例的uptime，单位秒
+- last_check_ms：最近一次执行check距现在已多久，单位毫秒
+- Queries：该实例已执行query的数量
+- Client_Connections_connected：number of client&rsquo;s connections connected
+- Client_Connections_created：number of client&rsquo;s connections created
+**注意：**当前这些状态只为debug目的，但未来可能会作为远程实例的健康指标。</p>
+<h4 id="3stats_proxysql_servers_status">3.stats_proxysql_servers_status</h4>
+<p>Currently unused – this table was created to show general statistics related to all the services configured in the <code>proxysql_servers</code> table.</p>
+<pre tabindex="0"><code>Admin&gt; show create table stats.stats_proxysql_servers_status\G
+*************************** 1. row ***************************
+       table: stats_proxysql_servers_status
+Create Table: CREATE TABLE stats_proxysql_servers_status (
+    hostname VARCHAR NOT NULL,
+    port INT NOT NULL DEFAULT 6032,
+    weight INT CHECK (weight &gt;= 0) NOT NULL DEFAULT 0,
+    master VARCHAR NOT NULL,
+    global_version INT NOT NULL,
+    check_age_us INT NOT NULL,
+    ping_time_us INT NOT NULL, checks_OK INT NOT NULL,
+    checks_ERR INT NOT NULL,
+    PRIMARY KEY (hostname, port) )
+1 row in set (0.00 sec)
+</code></pre><h4 id="re-configuration">Re-configuration</h4>
+<p>因为集群间，所有节点都是相互监控的。每个ProxySQL节点都监控集群中的其它实例，它们可以快速探测到某个实例的配置是否发生改变。如果某实例的配置发生改变，其它实例会检查这个配置和自身的配置是否相同，因为其它节点的配置可能和本节点的配置同时(或在极短时间差范围)发生了改变。</p>
+<p>由于相互监控，所以当配置发生变动时，它们可以立即发现。当其他节点的配置发生变动时，本节点会先去检查一次它自身的配置，因为有可能remote instance 和local instance 同时发生配置变动。
+如果比较结果不同：
+<strong>-</strong> 如果它们自身的 version = 1，就去找集群内从version &gt; 1的节点处找出epoch最大值的节点，并从该节点拉取配置应用到本地，并立即同步。
+<strong>-</strong> 如果version &gt;1， 该节点开始统计和其他节点间的differ 数。即开始对探测到的不同配置进行计数。
+<strong>-</strong>  当 differ 大于 cluster__name___diffs_before_sync ，  并且cluster__name__diffs_before_sync &gt; 0， 就去找集群内 version &gt;1， 并且epoch  最高的节点，并立即同步。也就是说当探测到不同配置的次数超过cluster_name_diffs_before_sync，且cluster_name_diffs_before_sync大于0时，找出version &gt; 1且epoch值最大的节点，并从该节点拉取配置禁用应用。</p>
+<p>同步配置的过程如下：
+<strong>-</strong> 用于健康检查的连接，也用来执行一系列类似于select _list_of_columns from runtime_module的select语句。例如：</p>
+<pre tabindex="0"><code>SELECT hostgroup_id, ``hostname``, port, status, weight, compression, max_connections,  max_replication_lag, use_ssl, max_latency_ms, comment FROM  runtime_mysql_servers;``SELECT writer_hostgroup, reader_hostgroup, comment FROM runtime_mysql_replication_hostgroups;
+</code></pre><p>删除本地配置。例如：</p>
+<pre tabindex="0"><code>DELETE FROM mysql_servers;DELETE FROM mysql_replication_hostgroups;
+</code></pre><p><strong>-</strong> 向本地配置表中插入已从远端节点检索到的新配置。
+<strong>-</strong> 在内部执行LOAD module_name TO RUNTIME：这会递增版本号，并创建一个新的checksum。
+<strong>-</strong> 如果cluster_name_save_to_disk=true，再在内部执行SAVE module_name TO DISK。</p>
+<p>参考文档：https://www.cnblogs.com/kevingrace/p/10411457.html</p>
+<h4 id="进行配置">进行配置</h4>
+<p>要使用的VIP： 10.241.10.3</p>
+<table>
+<thead>
+<tr>
+<th>机器</th>
+<th>角色</th>
+<th>内网IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>xxx.xxx.xxx.117</td>
+<td>原来搭建好的proxysql</td>
+<td>10.241.10.1</td>
+</tr>
+<tr>
+<td>xxx.xxx.xxx.114</td>
+<td>要新添加组建集群的proxysql</td>
+<td>10.241.10.2</td>
+</tr>
+</tbody>
+</table>
+<p>写配置文件和实时修改都可以，记得</p>
+<p><code>load *** to runtime</code>、<code>save *** to disk</code></p>
+<p><strong>1.规定集群信息（在117上）</strong></p>
+<pre tabindex="0"><code>ProxySQL-Admin&gt;  set  admin-admin_credentials=&#34;admin:admin;cluster_name:123456&#34;;
+Query OK, 1 row affected (0.00 sec)
+ProxySQL-Admin&gt;  set admin-cluster_username=&#34;cluster_name&#34;;
+Query OK, 1 row affected (0.00 sec)
+ProxySQL-Admin&gt;  set admin-cluster_password=&#34;123456&#34;;
+Query OK, 1 row affected (0.00 sec)
+ProxySQL-Admin&gt;  set admin-cluster_check_interval_ms=200;
+Query OK, 1 row affected (0.01 sec)
+ProxySQL-Admin&gt;  set admin-cluster_check_status_frequency=100;
+Query OK, 1 row affected (0.00 sec)
+
+
+ProxySQL-Admin&gt;  load admin variables to runtime;
+Query OK, 0 rows affected (0.00 sec)
+
+ProxySQL-Admin&gt;  save admin variables  to disk;
+Query OK, 35 rows affected (0.01 sec)
+</code></pre><p><code>select * from global_variables;</code>可以查看修改结果</p>
+<p><strong>2.写入节点信息</strong></p>
+<pre tabindex="0"><code>ProxySQL-Admin&gt;  show create table proxysql_servers;
+| table            | Create Table                                                         
+| proxysql_servers | CREATE TABLE proxysql_servers (
+    hostname VARCHAR NOT NULL,
+    port INT NOT NULL DEFAULT 6032,
+    weight INT CHECK (weight &gt;= 0) NOT NULL DEFAULT 0,
+    comment VARCHAR NOT NULL DEFAULT &#39;&#39;,
+    PRIMARY KEY (hostname, port) ) |
+1 row in set (0.00 sec)
+</code></pre><p>写入节点</p>
+<pre tabindex="0"><code>
+ProxySQL-Admin&gt;  insert into proxysql_servers(hostname,port)values(&#39;xxx.xxx.xxx.114&#39;,6032);
+Query OK, 1 row affected (0.00 sec)
+
+ProxySQL-Admin&gt;  insert into proxysql_servers(hostname,port)values(&#39;xxx.xxx.xxx.117&#39;,6032);
+Query OK, 1 row affected (0.00 sec)
+
+ProxySQL-Admin&gt;  load proxysql servers to runtime;
+Query OK, 0 rows affected (0.00 sec)
+
+ProxySQL-Admin&gt;  save proxysql servers to disk;
+Query OK, 0 rows affected (0.01 sec)
+</code></pre><p>为了练习 在另一个节点我们使用配置文件进行修改，值的注意的是</p>
+<pre tabindex="0"><code>这里要特别注意：
+如果存在如果存在``&#34;proxysql.db&#34;``文件(在``/var/lib/proxysql``目录下)，则ProxySQL服务只有在第一次启动时才会去读取proxysql.cnf文件并解析；后面启动会就不会读取proxysql.cnf文件了！如果想要让proxysql.cnf文件里的配置在重启proxysql服务后生效(即想要让proxysql重启时读取并解析proxysql.cnf配置文件)，则需要先删除``/var/lib/proxysql/proxysql``.db数据库文件，然后再重启proxysql服务。这样就相当于初始化启动proxysql服务了，会再次生产一个纯净的proxysql.db数据库文件(如果之前配置了proxysql相关路由规则等，则就会被抹掉)。
+</code></pre><pre tabindex="0"><code>[root@localhost ~]# cp /etc/proxysql.cnf /etc/proxysql.cnf.bak
+[root@localhost ~]# vim /etc/proxysql.cnf
+
+admin_variables=
+{
+        admin_credentials=&#34;admin:admin;cluster_name:123456&#34;
+#       mysql_ifaces=&#34;127.0.0.1:6032;/tmp/proxysql_admin.sock&#34;
+        mysql_ifaces=&#34;0.0.0.0:6032&#34;
+#       refresh_interval=2000
+#       debug=true
+        cluster_username=&#34;cluster_name&#34;                                  
+        cluster_password=&#34;123456&#34;
+        cluster_check_interval_ms=2000
+        cluster_check_status_frequency=1000
+}
+proxysql_servers =
+(
+        {
+        hostname=&#34;xxx.xxx.xxx.114&#34;
+        port=6032
+        },
+        {
+        hostname=&#34;xxx.xxx.xxx.117&#34;
+        port=6032
+
+        }
+)
+</code></pre><p>注意里面的圆括号</p>
+<pre tabindex="0"><code>[root@localhost ~]# systemctl restart proxysql
+[root@localhost ~]# ll  /var/lib/proxysql/proxysql.db 
+-rw------- 1 proxysql proxysql 196608 Oct 20 11:11 /var/lib/proxysql/proxysql.db
+</code></pre><h4 id="观察集群状况">观察集群状况</h4>
+<pre tabindex="0"><code>[root@localhost ~]# mysql -uadmin -padmin -h127.0.0.1 -P6032
+MySQL [(none)]&gt; select * from stats_proxysql_servers_metrics; 
++-----------------+------+--------+---------+------------------+----------+---------------+---------+-------------------
+| hostname        | port | weight | comment | response_time_ms | Uptime_s | last_check_ms | Queries | Client_Connections
++-----------------+------+--------+---------+------------------+----------+---------------+---------+-------------------
+| xxx.xxx.xxx.114  | 6032 | 0      |         | 0                | 0        | 676276571     | 0       | 0                 
+| xxx.xxx.xxx.117 | 6032 | 0      |         | 0                | 0        | 676276571     | 0       | 0                 
++-----------------+------+--------+---------+------------------+----------+---------------+---------+-------------------
+2 rows in set (0.00 sec)
+
+MySQL [(none)]&gt; select * from proxysql_servers;
++-----------------+------+--------+---------+
+| hostname        | port | weight | comment |
++-----------------+------+--------+---------+
+| xxx.xxx.xxx.114  | 6032 | 0      |         |
+| xxx.xxx.xxx.117 | 6032 | 0      |         |
++-----------------+------+--------+---------+
+2 rows in set (0.00 sec)
+
+mysql&gt; select hostname,name,checksum,updated_at from stats_proxysql_servers_checksums;
++-----------------+-------------------+--------------------+------------+
+| hostname        | name              | checksum           | updated_at |
++-----------------+-------------------+--------------------+------------+
+| xxx.xxx.xxx.117 | admin_variables   |                    | 1603245278 |
+| xxx.xxx.xxx.117 | mysql_query_rules | 0xD331FBA2DFADB529 | 1603245278 |
+| xxx.xxx.xxx.117 | mysql_servers     | 0xF38804B1395AE050 | 1603245278 |
+| xxx.xxx.xxx.117 | mysql_users       | 0xA9B3797834E823FC | 1603245278 |
+| xxx.xxx.xxx.117 | mysql_variables   |                    | 1603245278 |
+| xxx.xxx.xxx.117 | proxysql_servers  | 0x66124755F5959C8D | 1603245278 |
+| xxx.xxx.xxx.114 | admin_variables   |                    | 1603245278 |
+| xxx.xxx.xxx.114 | mysql_query_rules | 0xD331FBA2DFADB529 | 1603245278 |
+| xxx.xxx.xxx.114 | mysql_servers     | 0xF38804B1395AE050 | 1603245278 |
+| xxx.xxx.xxx.114 | mysql_users       | 0xA9B3797834E823FC | 1603245278 |
+| xxx.xxx.xxx.114 | mysql_variables   |                    | 1603245278 |
+| xxx.xxx.xxx.114 | proxysql_servers  | 0x66124755F5959C8D | 1603245278 |
+
+12 rows in set (0.00 sec)
+</code></pre><p>此后多看日志 <code>tail -f /var/lib/proxysql/proxysql.log</code>, 这里会提示你需要做哪些操作或是修改变量来进行同步。注意proxysql 账号和monitor账号在mysql机器上是否有限制。</p>
+<p>通过调试使得proxysql.log无报错后。</p>
+<p>通过<code>select * from mysql_servers;</code>观察数据时候同步</p>
+<p>下面进行高可用配置。</p>
+<h4 id="proxysql的高可用">Proxysql的高可用</h4>
+<p>使用keepalived,</p>
+<h3 id="keepalived-官方网站-httpswwwkeepalivedorg">Keepalived 官方网站 <a href="https://www.keepalived.org/">https://www.keepalived.org/</a></h3>
+<p>基于（Vitual Router Redundancy Protocol，虚拟路由冗余协议）,VRRP是为了解决静态路由的高可用。VRRP的基本架构。利用VIP资源漂移来实现ProxySQL双节点的无感知故障切换，即对外提供一个统一的vip地址，并且在keepalived.conf文件中配置proxysql服务的监控脚本，当宕机或proxysql服务挂掉时就将vip资源漂移到另一个正常的节点上，从而使proxysql的代理层持续无感应地提供服务。</p>
+<h4 id="vrrp的基本架构">VRRP的基本架构</h4>
+<p>虚拟路由器由多个路由器组成，每个路由器都有各自的IP和共同的VRID(0-255)，其中一个VRRP路由器通过竞选成为MASTER，占有VIP，对外提供路由服务，其他成为BACKUP，MASTER以IP组播（组播地址：224.0.0.18）形式发送VRRP协议包，与BACKUP保持心跳连接，若MASTER不可用（或BACKUP接收不到VRRP协议包），则BACKUP通过竞选产生新的MASTER并继续对外提供路由服务，从而实现高可用。
+链接：https://www.jianshu.com/p/b050d8861fc1</p>
+<h4 id="工作类型">工作类型</h4>
+<pre tabindex="0"><code class="language-undefined" data-lang="undefined">抢占式：当出现比现有主服务器优先级高的服务器时，会发送通告抢占角色成为主服务器
+非抢占式：
+</code></pre><p>核心组件</p>
+<pre tabindex="0"><code>        vrrp stack：vrrp协议的实现
+        ipvs wrapper：为集群内的所有节点生成IPVS规则
+        checkers：对IPVS集群的各RS做健康状态检测
+        控制组件：配置文件分析器，用来实现配置文件的分析和加载
+        IO复用器
+        内存管理组件，用来管理keepalived高可用是的内存管理
+</code></pre><p><strong>注意：各节点时间需要同步</strong></p>
+<h5 id="下载和安装">下载和安装</h5>
+<pre tabindex="0"><code> wget https://www.keepalived.org/software/keepalived-2.1.5.tar.gz
+ tar -xvf keepalived-2.1.5.tar.gz 
+ cd keepalived-2.1.5
+ ./configure --prefix=/usr/local/keepalived
+ yum -y install openssl
+ make &amp;&amp; make install
+</code></pre><h5 id="基本配置">基本配置</h5>
+<pre tabindex="0"><code># tree -l /usr/local/keepalived/etc
+-- keepalived
+|   |-- keepalived.conf
+|   `-- samples #这个里面是例子，先不管他
+`-- sysconfig
+    `-- keepalived
+# mkdir /etc/keepalived
+#  cp /usr/local/keepalived/etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf
+# cp /usr/local/keepalived/etc/sysconfig/keepalived /etc/sysconfig/keepalived
+# chkconfig keepalived on
+# service keepalived start   #启动服务
+# service keepalived stop    #停止服务
+# service keepalived restart #重启服务
+</code></pre><p>使用<code>service keepalived start</code>命令启动服务时，默认会将<code>/etc/sysconfig/keepalived</code>文件中<code>KEEPALIVED_OPTIONS</code>参数作为<code>keepalived</code>服务启动时的参数，并从<code>/etc/keepalived/</code>目录下加载keepalived.conf配置文件，或用-f参数指定配置文件的位置。</p>
+<h5 id="进行配置文件的书写">进行配置文件的书写</h5>
+<p>117 作为msater</p>
+<pre tabindex="0"><code>! Configuration File for keepalived
+
+global_defs {
+   script_user root
+   enable_script_security 
+   router_id Master-proxysql #标识本节点的名称，通常为hostname
+}
+## keepalived会定时执行脚本并对脚本执行的结果进行分析,动态调整vrrp_instance的优先级。
+##如果脚本执行结果为0,并且weight配置的值大于0,则优先级相应的增加。如果脚本执行结果非0,
+##并且weight配置的值小于 0,则优先级相应的减少。其他情况,维持原本配置的优先级,即配置文件中priority对应的值。
+vrrp_script chk_proxysql {
+	script &#34;/etc/keepalived/sql_check.sh&#34;
+	interval 2 #每2秒检测一次nginx的运行状态
+	weight -20 #失败一次，将自己的优先级-20
+}
+vrrp_instance VI_1 {
+    state MASTER  # 状态，主节点为MASTER，备份节点为BACKUP
+    interface eth1  # 绑定VIP的网络接口，通过ip a查看自己的网络接口
+    virtual_router_id 123 # 虚拟路由的ID号,两个节点设置必须一样,可选IP最后一段使用,相同的VRID为一个组,他将决定多播的MAC地址
+    mcast_src_ip 10.241.10.1  # 本机IP地址
+    priority 110 # 节点优先级，值范围0～254，MASTER要比BACKUP高
+    advert_int 1  # 组播信息发送时间间隔，两个节点必须设置一样，默认为1秒
+    # 设置验证信息，两个节点必须一致
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    # 虚拟IP，两个节点设置必须一样。可以设置多个，一行写一个
+    virtual_ipaddress {
+    	10.241.10.3
+	}
+    track_script {
+		chk_proxysql	# nginx存活状态检测脚本		
+	}
+}
+</code></pre><p>114为BACKUP</p>
+<pre tabindex="0"><code>! Configuration File for keepalived
+
+global_defs {
+   script_user root
+   enable_script_security 
+   router_id Master-proxysql
+}
+
+vrrp_script chk_proxysql {
+	script &#34;/etc/keepalived/sql_check.sh&#34;
+	interval 2
+	weight -20
+}
+vrrp_instance VI_1 {
+    state BACKUP
+    interface eth1
+    virtual_router_id 123
+    mcast_src_ip 10.241.10.2
+    priority 100
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+    	10.241.10.3
+	}
+    track_script {
+	chk_proxysql			
+	}
+}
+</code></pre><p>检查proxysql的脚本 <code>cat /etc/keepalived/sql_check.sh</code></p>
+<pre tabindex="0"><code>#!/bin/bash
+echo &#39;我开始运行啦&#39;
+num=`ps aux | grep   proxysql | grep -cv grep`
+echo ‘记录好了’ $num
+if [ $num -eq 0 ];then
+        #这里忽略重启
+	echo &#39;进入判断&#39;
+        sleep 1
+        if [ `ps aux | grep   proxysql | grep -cv grep` -eq 0 ];then
+                echo &#39;进入小判断&#39;
+		echo &#39;stop keepalived&#39; &gt; /etc/keepalived/chk_log
+		kill -9 $(ps aux | grep keepalived | grep -v grep | cut  -d&#39; &#39; -f 7)
+		echo &#39;stop !&#39; &gt; /etc/keepalived/chk_log
+        fi
+fi
+</code></pre><p><strong>记得给脚本执行权限</strong><code>chmod a+x /etc/keepalived/proxysql_check.sh </code></p>
+<p>启动keepalived后<code>ip a</code>查看</p>
+<p>keepalived-master端</p>
+<pre tabindex="0"><code>3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:50:56:ab:d7:be brd ff:ff:ff:ff:ff:ff
+    inet 10.241.10.1/16 brd 10.241.255.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet 10.241.10.3/32 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::250:56ff:feab:d7be/64 scope link 
+       valid_lft forever preferred_lft forever
+</code></pre><p>keepalived-slave端</p>
+<pre tabindex="0"><code>3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:50:56:ab:4a:16 brd ff:ff:ff:ff:ff:ff
+    inet 10.241.10.2/16 brd 10.241.255.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::250:56ff:feab:4a16/64 scope link 
+       valid_lft forever preferred_lft forever
+</code></pre><h3 id="检查">检查</h3>
+<p>【将主机proxysql关闭，会发现主机上的keepalived关闭，<code>vip:10.241.10.3</code> 飘移到了从机器】</p>
+<p>使用飘移VIP连接MYSQL</p>
+<p>在读写期间进行从机切换新建<code>test</code>数据库 <code>test</code>数据表</p>
+<pre tabindex="0"><code>mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| dbtest             |
+| hanzhongtest       |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+6 rows in set (0.00 sec)
+mysql&gt; create database proxysqlHA;
+Query OK, 1 row affected (0.01 sec)
+mysql&gt; use proxysqlHA;
+Database changed
+mysql&gt; create table test_id(id int,name varchar(10));
+Query OK, 0 rows affected (0.01 sec)
+</code></pre><p>在python写入时，进行切换</p>
+<pre tabindex="0"><code>import pymysql
+config = {
+&#39;host&#39; : &#39;10.241.10.3&#39;,
+&#39;db&#39; : &#39;proxysqlHA&#39;,
+&#39;user&#39; : &#39;proxysql&#39;,
+&#39;password&#39; : &#39;Proxy-123456&#39;,
+&#39;port&#39; : 6033,
+}
+for i in range(1,1000000):
+insertstr = &#34;insert into test_id values(%s,&#39;zhangsan%s&#39;)&#34; % (i,str(i),i)
+print(insertstr)
+sqlstr = insertstr
+db = pymysql.connect(**config)
+cursor = db.cursor()
+cursor.execute(sqlstr)
+db.commit()
+print(&#34;count: {}&#34;.format(i) )
+db.close()
+</code></pre><p>在开始写入后关闭117主机的proxysql，观察发现确实在切换过程的一瞬间会出现写入失败。切换完成后访问正常。</p>
+<h3 id="遇到的问题-1">遇到的问题</h3>
+<p>1.忘记将检查脚本弄成执行权限</p>
+<p>2.脚本的名字完全包含了proxysql 导致检查出错。</p>
+<p>3.切换时间包括 keepalived运行脚本的间隔时间、检查脚本的sleep时间、组播信息间隔的时间。想要最小化时间需要将所有间隔和sleep减去。</p>
+<p>但是组播信息间隔时间<code>vrrp version 2</code> 中最小只能到1s 默认启动<code>vrrp version 2</code></p>
+<hr>
+
+        </article>
+    </div>
+
+    
+       	
+
+
+
+
+
+
+<div id="comments" class="post-comments">
+  <div class="comment-head">
+    <div class="comment-headline">
+      <i class="fa fa-comments fa-fw"></i>
+      
+    </div>
+  
+  </div>
+  <div class="comment-wrap">
+  
+  
+    <div>      
+      <div class="comment-loading">
+    <i class="fa fa-sync fa-spin"></i>
+  </div>
+      <div class="waline-container"></div>
+
+    </div>
+  
+  </div>
+</div>  
+
+    
+</div><aside class="Qc_aside">
+
+<section class="Qc_aside_item tags"> 
+    <div class="Qc_aside_item-title"> 
+        <i class="iconfont icon-A67" style="margin-right: 8px;font-size: 17px"></i> 
+        <span class="text">文章分类</span> 
+        <span class="qccq_mac"></span> 
+    </div> 
+    <div class="Qc_aside_item-contain" style="padding:10px"> 
+        <div class="tag"></div> 
+		<ul class="list">
+			
+			
+			   
+			<li class="item"> 
+				<a class="link" href="/categories/%E4%B8%93%E4%B8%9A%E6%8A%80%E8%83%BD/">专业技能 </a>
+				<span class="widget__counter widget__counter--bubble">3</span>
+			</li>
+			
+			   
+			<li class="item"> 
+				<a class="link" href="/categories/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/">个人随笔 </a>
+				<span class="widget__counter widget__counter--bubble">1</span>
+			</li>
+	</div>
+</section>
+
+
+
+
+<section class="Qc_aside_item tags"> 
+    <div class="Qc_aside_item-title"> 
+        <i class="iconfont icon-A67" style="margin-right: 8px;font-size: 17px"></i> 
+        <span class="text">标签云</span> 
+        <span class="xccx_mac"></span> 
+    </div> 
+     <div class="Qc_aside_item-contain" style="padding:10px"> 
+        <div class="tag"></div> 
+        <ul class="cloud">
+            
+
+                
+            <li class="item">
+                <a style="background:#4C83FF" href="/tags/anisble/" title="Anisble">Anisble</a>
+            </li>
+
+                
+            <li class="item">
+                <a style="background:#4C83FF" href="/tags/etcd/" title="ETCD">ETCD</a>
+            </li>
+
+                
+            <li class="item">
+                <a style="background:#4C83FF" href="/tags/proxysql/" title="ProxySQL">ProxySQL</a>
+            </li>
+         </ul> 
+        </div> 
+    </section>
+
+
+
+    
+
+    <section class="sticky_layout"><style>
+
+    .card-widget:first-child {
+        margin-top: 0
+    }
+
+    @media screen and (max-width:900px) {
+        .card-widget:first-child {
+            margin-top: 20px
+        }
+    }
+
+     .card-widget {
+        position: relative;
+        overflow: hidden;
+        margin-top: 20px;
+        padding: 20px 24px;
+        color:var(--main)
+    }
+
+     .card-widget,
+    #recent-posts>.recent-post-item,
+    .cardHover,
+    .error404 #error-wrap .error-content,
+    .layout>.recent-posts .pagination>:not(.space),
+    .layout>div:first-child:not(.recent-posts) {
+        border-radius: 8px;
+        background: var(--background);
+        -webkit-box-shadow: var(--card-box-shadow);
+        box-shadow: var(--card-box-shadow);
+        -webkit-transition: all .3s;
+        -moz-transition: all .3s;
+        -o-transition: all .3s;
+        -ms-transition: all .3s;
+        transition: all .3s
+    }
+
+    .card-widget:hover,
+    #recent-posts>.recent-post-item:hover,
+    .cardHover:hover,
+    .error404 #error-wrap .error-content:hover,
+    .layout>.recent-posts .pagination>:not(.space):hover,
+    .layout>div:first-child:not(.recent-posts):hover {
+        -webkit-box-shadow: var(--card-hover-box-shadow);
+        box-shadow: var(--card-hover-box-shadow)
+    }
+
+
+
+    .item-headline {
+        padding-bottom: 6px;
+        font-size: 1.2em
+    }
+
+     .item-headline span {
+        margin-left: 6px
+    }
+
+   
+ 
+     @media screen and (min-width:900px) {
+        .sticky_layout {
+            position: sticky;
+            position: -webkit-sticky;
+            top: 60px;
+            -webkit-transition: top .3s;
+            -moz-transition: top .3s;
+            -o-transition: top .3s;
+            -ms-transition: top .3s;
+            transition: top .3s
+        }
+    } 
+
+    
+
+
+
+    #card-toc .toc-percentage {
+        float: right;
+        margin-top: -9px;
+        color: #a9a9a9;
+        font-style: italic;
+        font-size: 140%
+    }
+
+    #card-toc .toc-content {
+        overflow-y: scroll;
+        overflow-y: overlay;
+        margin: 0 -24px;
+        max-height: calc(100vh - 120px)
+    }
+
+    @media screen and (max-width:900px) {
+         #card-toc .toc-content {
+            max-height: calc(100vh - 140px)
+        }
+    }
+
+     #card-toc .toc-content>* {
+        margin: 0 20px !important
+    }
+
+
+
+     #card-toc .toc-content>*>.toc-item>.toc-child {
+        margin-left: 10px;
+        padding-left: 10px;
+        border-left: 1px solid var(--dark-grey)
+    }
+
+    #card-toc .toc-content:not(.is-expand) .toc-child {
+        display: none
+    }
+
+    @media screen and (max-width:900px) {
+        #card-toc .toc-content:not(.is-expand) .toc-child {
+            display: block !important
+        }
+    }
+
+   #card-toc .toc-content:not(.is-expand) .toc-item.active .toc-child {
+        display: block
+    }
+
+    #card-toc .toc-content li,
+     #card-toc .toc-content ol {
+        list-style: none
+    }
+
+     #card-toc .toc-content>ol {
+        padding: 0 !important
+    }
+
+    #card-toc .toc-content ol {
+        margin: 0;
+        padding-left: 18px
+    }
+
+    #card-toc .toc-content .toc-link {
+        display: block;
+        margin: 4px 0;
+        padding: 1px 6px;
+        color: var(--toc-link-color);
+        -webkit-transition: all .2s ease-in-out;
+        -moz-transition: all .2s ease-in-out;
+        -o-transition: all .2s ease-in-out;
+        -ms-transition: all .2s ease-in-out;
+        transition: all .2s ease-in-out
+    }
+
+     #card-toc .toc-content .toc-link:hover {
+        color: #49b1f5
+    }
+
+    #card-toc .toc-content .toc-link.active {
+        background: #00c4b6;
+        color: #fff
+    }
+
+     .sticky_layout:only-child>:first-child {
+        margin-top: 20px
+    }
+
+
+</style><div class="card-widget" id="card-toc">
+        <div class="item-headline">
+            <i class="fa fa-bars"></i>
+            <span>目录</span>
+            <span class="toc-percentage">0</span>
+        </div>
+        <div class="toc-content"><ol class="toc">
+                        <li class="toc-item toc-level-3">
+                            <a class="toc-link" href="#proxysql" aria-label="ProxySQL" data-pjax-state="anchor">
+                                <span class="toc-number">1</span> 
+                                <span class="toc-text">ProxySQL</span>
+                            </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e4%b8%8b%e8%bd%bd%e4%b8%8e%e5%ae%89%e8%a3%85" aria-label="下载与安装" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">下载与安装</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#ubuntu" aria-label="Ubuntu" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">Ubuntu</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e4%b8%8b%e8%bd%bd" aria-label="下载" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">下载</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e5%ae%89%e8%a3%85" aria-label="安装" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">安装</span>
+                        </a></li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#centos8" aria-label="Centos8" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">Centos8</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e4%b8%8b%e8%bd%bd-1" aria-label="下载" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">下载</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e5%ae%89%e8%a3%85-1" aria-label="安装" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">安装</span>
+                        </a></li></ol>
+                        </li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e5%90%af%e5%8a%a8" aria-label="启动" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">启动</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e7%99%bb%e5%bd%95" aria-label="登录" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">登录</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e5%a4%9a%e5%b1%82%e7%9a%84%e9%85%8d%e7%bd%ae%e7%b3%bb%e7%bb%9f" aria-label="多层的配置系统" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">多层的配置系统</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e9%85%8d%e7%bd%ae%e4%b8%bb%e4%bb%8e%e5%88%86%e7%bb%84%e4%bf%a1%e6%81%af" aria-label="配置主从分组信息" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">配置主从分组信息</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e5%b0%86%e4%b8%aa%e6%9c%8d%e5%8a%a1%e5%99%a8%e6%b7%bb%e5%8a%a0%e5%88%b0mysql_server%e8%a1%a8" aria-label="将个服务器添加到mysql_server表" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">将个服务器添加到mysql_server表</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#proxysql-%e7%9b%91%e6%8e%a7%e5%90%8e%e7%ab%af%e8%8a%82%e7%82%b9" aria-label="ProxySQL 监控后端节点" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">ProxySQL 监控后端节点</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e9%85%8d%e7%bd%aeproxy" aria-label="配置proxy" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">配置proxy</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e9%85%8d%e7%bd%ae%e8%af%bb%e5%86%99%e5%88%86%e7%a6%bb" aria-label="配置读写分离" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">配置读写分离</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e8%b7%af%e7%94%b1%e8%a7%84%e5%88%99" aria-label="路由规则" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">路由规则</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e8%a7%84%e5%88%99%e7%9a%84%e5%86%99%e5%85%a5" aria-label="规则的写入" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">规则的写入</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e8%af%bb%e5%86%99%e5%88%86%e7%a6%bb%e6%b5%8b%e8%af%95" aria-label="读写分离测试" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">读写分离测试</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e6%b5%8b%e8%af%95%e8%af%bb" aria-label="测试读" data-pjax-state="anchor">
+                            <span class="toc-number">5</span> 
+                            <span class="toc-text">测试读</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e6%b5%8b%e8%af%95%e5%86%99" aria-label="测试写" data-pjax-state="anchor">
+                            <span class="toc-number">5</span> 
+                            <span class="toc-text">测试写</span>
+                        </a></li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e6%9f%a5%e7%9c%8b%e8%b7%af%e7%94%b1%e4%bf%a1%e6%81%af" aria-label="查看路由信息" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">查看路由信息</span>
+                        </a></li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e6%80%bb%e7%bb%93" aria-label="总结：" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">总结：</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e9%81%87%e5%88%b0%e7%9a%84%e9%97%ae%e9%a2%98" aria-label="遇到的问题" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">遇到的问题</span>
+                        </a></li></ol>
+                        </li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#proxysql-%e7%9a%84%e9%ab%98%e5%8f%af%e7%94%a8" aria-label="ProxySql 的高可用" data-pjax-state="anchor">
+                            <span class="toc-number">2</span> 
+                            <span class="toc-text">ProxySql 的高可用</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e7%9b%b8%e5%85%b3%e5%8f%98%e9%87%8f" aria-label="相关变量" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">相关变量</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#1%e7%94%a8%e4%ba%8e%e5%90%8c%e6%ad%a5%e7%9a%84%e5%8f%98%e9%87%8f" aria-label="1.用于同步的变量" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">1.用于同步的变量</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#2%e9%9b%86%e7%be%a4%e5%87%ad%e8%af%81%e5%8f%98%e9%87%8f" aria-label="2.集群凭证变量" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">2.集群凭证变量</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#3%e6%a3%80%e6%9f%a5%e9%a2%91%e7%8e%87%e5%92%8c%e9%97%b4%e9%9a%94%e6%97%b6%e9%97%b4" aria-label="3.检查频率和间隔时间" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">3.检查频率和间隔时间</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#4%e5%b0%86%e9%85%8d%e7%bd%ae%e5%90%8c%e6%ad%a5%e5%88%b0%e7%a3%81%e7%9b%98" aria-label="4.将配置同步到磁盘" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">4.将配置同步到磁盘</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#5%e6%98%af%e5%90%a6%e9%9c%80%e8%a6%81%e8%bf%9c%e7%a8%8b%e5%90%8c%e6%ad%a5%e5%8f%98%e9%87%8f" aria-label="5.是否需要远程同步变量" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">5.是否需要远程同步变量</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#6%e5%bb%b6%e8%bf%9f%e5%90%8c%e6%ad%a5" aria-label="6.延迟同步" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">6.延迟同步</span>
+                        </a></li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e9%9c%80%e8%a6%81%e9%85%8d%e7%bd%ae%e7%9a%84%e8%a1%a8" aria-label="需要配置的表" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">需要配置的表</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#1proxysql_servers" aria-label="1.proxysql_servers" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">1.proxysql_servers</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#2runtime_proxysql_servers" aria-label="2.runtime_proxysql_servers" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">2.runtime_proxysql_servers</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#3runtime_checksums_values" aria-label="3.runtime_checksums_values" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">3.runtime_checksums_values</span>
+                        </a></li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#stats-tables" aria-label="stats tables" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">stats tables</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#1stats_proxysql_servers_checksums" aria-label="1.stats_proxysql_servers_checksums" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">1.stats_proxysql_servers_checksums</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#2stats_proxysql_servers_metrics-%e8%a1%a8" aria-label="2.stats_proxysql_servers_metrics 表" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">2.<strong>stats_proxysql_servers_metrics 表</strong></span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#3stats_proxysql_servers_status" aria-label="3.stats_proxysql_servers_status" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">3.stats_proxysql_servers_status</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#re-configuration" aria-label="Re-configuration" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">Re-configuration</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e8%bf%9b%e8%a1%8c%e9%85%8d%e7%bd%ae" aria-label="进行配置" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">进行配置</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e8%a7%82%e5%af%9f%e9%9b%86%e7%be%a4%e7%8a%b6%e5%86%b5" aria-label="观察集群状况" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">观察集群状况</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#proxysql%e7%9a%84%e9%ab%98%e5%8f%af%e7%94%a8" aria-label="Proxysql的高可用" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">Proxysql的高可用</span>
+                        </a></li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#keepalived-%e5%ae%98%e6%96%b9%e7%bd%91%e7%ab%99-httpswwwkeepalivedorg" aria-label="Keepalived 官方网站 https://www.keepalived.org/" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">Keepalived 官方网站 <a href="https://www.keepalived.org/">https://www.keepalived.org/</a></span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#vrrp%e7%9a%84%e5%9f%ba%e6%9c%ac%e6%9e%b6%e6%9e%84" aria-label="VRRP的基本架构" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">VRRP的基本架构</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e5%b7%a5%e4%bd%9c%e7%b1%bb%e5%9e%8b" aria-label="工作类型" data-pjax-state="anchor">
+                            <span class="toc-number">4</span> 
+                            <span class="toc-text">工作类型</span>
+                        </a><ol class="toc-child">
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e4%b8%8b%e8%bd%bd%e5%92%8c%e5%ae%89%e8%a3%85" aria-label="下载和安装" data-pjax-state="anchor">
+                            <span class="toc-number">5</span> 
+                            <span class="toc-text">下载和安装</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e5%9f%ba%e6%9c%ac%e9%85%8d%e7%bd%ae" aria-label="基本配置" data-pjax-state="anchor">
+                            <span class="toc-number">5</span> 
+                            <span class="toc-text">基本配置</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e8%bf%9b%e8%a1%8c%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6%e7%9a%84%e4%b9%a6%e5%86%99" aria-label="进行配置文件的书写" data-pjax-state="anchor">
+                            <span class="toc-number">5</span> 
+                            <span class="toc-text">进行配置文件的书写</span>
+                        </a></li></ol>
+                        </li></ol>
+                        </li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e6%a3%80%e6%9f%a5" aria-label="检查" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">检查</span>
+                        </a></li>
+
+                    <li class="toc-item toc-level-2">
+                        <a class="toc-link" href="#%e9%81%87%e5%88%b0%e7%9a%84%e9%97%ae%e9%a2%98-1" aria-label="遇到的问题" data-pjax-state="anchor">
+                            <span class="toc-number">3</span> 
+                            <span class="toc-text">遇到的问题</span>
+                        </a>
+                    </li>
+                </ol>
+                </li>
+                </ol>
+                </li>
+            </ol>
+
+        </div>
+    </div>
+
+
+
+
+
+<script>
+
+    const btf = {
+    
+        scrollToDest: (pos, time = 500) => {
+            const currentPos = window.pageYOffset
+            if (currentPos > pos) pos = pos - 70
+        
+            if ('scrollBehavior' in document.documentElement.style) {
+                window.scrollTo({
+                top: pos,
+                behavior: 'smooth'
+                })
+                return
+            }
+        
+            let start = null
+            pos = +pos
+            window.requestAnimationFrame(function step (currentTime) {
+                start = !start ? currentTime : start
+                const progress = currentTime - start
+                if (currentPos < pos) {
+                window.scrollTo(0, ((pos - currentPos) * progress / time) + currentPos)
+                } else {
+                window.scrollTo(0, currentPos - ((currentPos - pos) * progress / time))
+                }
+                if (progress < time) {
+                window.requestAnimationFrame(step)
+                } else {
+                window.scrollTo(0, pos)
+                }
+            })
+        },
+    
+       
+        getEleTop: ele => {
+            let actualTop = ele.offsetTop
+            let current = ele.offsetParent
+        
+            while (current !== null) {
+                actualTop += current.offsetTop
+                current = current.offsetParent
+            }
+        
+            return actualTop
+        },
+
+        updateAnchor: (anchor) => {
+            if (anchor !== window.location.hash) {
+                if (!anchor) anchor = location.pathname
+                const title = "秋码记录"
+                window.history.replaceState({
+                    url: location.href,
+                    title
+                }, title, anchor)
+            }
+        },
+
+
+        throttle: function (func, wait, options) {
+            let timeout, context, args
+            let previous = 0
+            if (!options) options = {}
+        
+            const later = function () {
+                previous = options.leading === false ? 0 : new Date().getTime()
+                timeout = null
+                func.apply(context, args)
+                if (!timeout) context = args = null
+            }
+        
+            const throttled = function () {
+                const now = new Date().getTime()
+                if (!previous && options.leading === false) previous = now
+                
+                const remaining = wait - (now - previous)
+                context = this
+                args = arguments
+                if (remaining <= 0 || remaining > wait) {
+                    if (timeout) {
+                        clearTimeout(timeout)
+                        timeout = null
+                    }
+                    previous = now
+                    func.apply(context, args)
+                    if (!timeout) context = args = null
+                } else if (!timeout && options.trailing !== false) {
+                    timeout = setTimeout(later, remaining)
+                }
+            }
+        
+            return throttled
+        },
+
+        getScrollPercent: (currentTop, ele) => {
+            const docHeight = ele.clientHeight
+            const winHeight = document.documentElement.clientHeight
+            const headerHeight = ele.offsetTop
+            const contentMath = (docHeight > winHeight) ? (docHeight - winHeight) : (document.documentElement.scrollHeight - winHeight)
+            const scrollPercent = (currentTop - headerHeight) / (contentMath)
+            const scrollPercentRounded = Math.round(scrollPercent * 100)
+            const percentage = (scrollPercentRounded > 100) ? 100 : (scrollPercentRounded <= 0) ? 0 : scrollPercentRounded
+            return percentage
+        },
+
+
+
+
+    }  
+
+
+
+     
+
+    const scrollFnToDo = function () {
+      const isToc = true 
+      const isAnchor = true 
+      const $article = document.getElementById('article-container')
+  
+      if (!($article && (isToc || isAnchor))) return
+  
+      let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand
+  
+      if (isToc) {
+        const $cardTocLayout = document.getElementById('card-toc')
+        $cardToc = $cardTocLayout.getElementsByClassName('toc-content')[0]
+        $tocLink = $cardToc.querySelectorAll('.toc-link')
+        $tocPercentage = $cardTocLayout.querySelector('.toc-percentage')
+        isExpand = $cardToc.classList.contains('is-expand')
+  
+        window.mobileToc = {
+          open: () => {
+            $cardTocLayout.style.cssText = 'animation: toc-open .3s; opacity: 1; right: 55px'
+          },
+  
+          close: () => {
+            $cardTocLayout.style.animation = 'toc-close .2s'
+            setTimeout(() => {
+              $cardTocLayout.style.cssText = "opacity:''; animation: ''; right: ''"
+            }, 100)
+          }
+        }
+  
+        
+        $cardToc.addEventListener('click', e => {
+          e.preventDefault()
+          const target = e.target.classList
+          if (target.contains('toc-content')) return
+          const $target = target.contains('toc-link')
+            ? e.target
+            : e.target.parentElement
+          btf.scrollToDest(btf.getEleTop(document.getElementById(decodeURI($target.getAttribute('href')).replace('#', ''))), 300)
+          if (window.innerWidth < 900) {
+            window.mobileToc.close()
+          }
+        })
+  
+        autoScrollToc = item => {
+          const activePosition = item.getBoundingClientRect().top
+          const sidebarScrollTop = $cardToc.scrollTop
+          if (activePosition > (document.documentElement.clientHeight - 100)) {
+            $cardToc.scrollTop = sidebarScrollTop + 150
+          }
+          if (activePosition < 100) {
+            $cardToc.scrollTop = sidebarScrollTop - 150
+          }
+        }
+      }
+  
+      
+      const list = $article.querySelectorAll('h1,h2,h3,h4,h5,h6')
+      let detectItem = ''
+      const findHeadPosition = function (top) {
+        if (top === 0) {
+          return false
+        }
+  
+        let currentId = ''
+        let currentIndex = ''
+  
+        list.forEach(function (ele, index) {
+          if (top > btf.getEleTop(ele) - 80) {
+            const id = ele.id
+            currentId = id ? '#' + encodeURI(id) : ''
+            currentIndex = index
+          }
+        })
+  
+        if (detectItem === currentIndex) return
+  
+        if (isAnchor) btf.updateAnchor(currentId)
+  
+        detectItem = currentIndex
+  
+        if (isToc) {
+          $cardToc.querySelectorAll('.active').forEach(i => { i.classList.remove('active') })
+  
+          if (currentId === '') {
+            return
+          }
+  
+          const currentActive = $tocLink[currentIndex]
+          currentActive.classList.add('active')
+  
+          setTimeout(() => {
+            autoScrollToc(currentActive)
+          }, 0)
+  
+          if (isExpand) return
+          let parent = currentActive.parentNode
+  
+          for (; !parent.matches('.toc'); parent = parent.parentNode) {
+            if (parent.matches('li')) parent.classList.add('active')
+          }
+        }
+      }
+  
+      
+      window.tocScrollFn = btf.throttle(() => {
+        const currentTop = window.scrollY || document.documentElement.scrollTop
+        
+         if(isToc){
+          $tocPercentage.textContent = btf.getScrollPercent(currentTop, $article)
+        }
+        findHeadPosition(currentTop)
+      }, 100)
+  
+      window.addEventListener('scroll', tocScrollFn)
+    }
+  
+
+    scrollFnToDo()
+</script>
+
+
+
+
+
+    </section>
+     
+
+</aside></div>
+	<footer class="Qc_footer">
+		<div class="Qc_container">
+			<div class="item">
+				<p>2018 - 2023 版权所有 ©<a href="http://beian.miit.gov.cn/">闽ICP备2021005633号-2</a></p>
+			</div>
+
+			<div class="item">
+				<p>
+					<strong>本站由 <span style="color:blue;font:bold;">Hugo</span> 驱动的 
+						<a href="https://github.com/zhenqicai/hugo-theme-kiwi" target="_blank" >hugo-theme-kiwi V0.0.1</a> 主题强力支撑</strong>
+				</p>
+			</div>
+		
+		</div>
+		</div>
+	</footer>
+
+	<style>
+		.joe_action {
+			position: fixed;
+			bottom: 90px;
+			right: 30px;
+			z-index: 333;
+		}
+
+
+		.joe_action_item.scroll.active {
+			visibility: visible;
+			-webkit-transform: scale(1);
+			transform: scale(1);
+		}
+
+		.joe_action_item.scroll {
+			visibility: hidden;
+			-webkit-transform: scale(0);
+			transform: scale(0);
+			transition: visibility 0.35s, -webkit-transform 0.35s;
+			transition: visibility 0.35s, transform 0.35s;
+			transition: visibility 0.35s, transform 0.35s, -webkit-transform 0.35s;
+		}
+
+		.joe_action_item {
+			box-shadow: rgb(0 0 0 / 10%) 0px 0px 10px, rgb(0 0 0 / 20%) 0px 5px 20px;
+			background: var(--darkreader-bg--background);
+		}
+		.joe_action_item {
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 40px;
+			height: 40px;
+			background: var(--background);
+			border-radius: 50%;
+			cursor: pointer;
+			margin-top: 15px;
+			box-shadow: 0 0 10px rgb(0 0 0 / 10%), 0 5px 20px rgb(0 0 0 / 20%);
+		}
+		.joe_action_item svg {
+			position: absolute;
+			width: 25px;
+			height: 25px;
+			fill: var(--theme);
+		}
+
+
+
+		.joe_action_item.mode svg{-webkit-transform:scale(0);transform:scale(0);opacity:0}
+		.joe_action_item.mode svg.active{-webkit-transform:scale(1);transform:scale(1);opacity:1}
+		
+	</style>
+
+
+	<div class="joe_action">
+		<div class="joe_action_item scroll ">
+			<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="25" height="25">
+				<path d="M725.902 498.916c18.205-251.45-93.298-410.738-205.369-475.592l-6.257-3.982-6.258 3.414c-111.502 64.853-224.711 224.142-204.8 475.59-55.751 53.476-80.214 116.623-80.214 204.8v15.36l179.2-35.27c11.378 40.39 58.596 69.973 113.21 69.973 54.613 0 101.262-29.582 112.64-68.836l180.337 36.41v-15.36c-.569-89.885-25.031-153.6-82.489-206.507zM571.733 392.533c-33.564 31.29-87.04 28.445-118.329-5.12s-28.444-87.04 5.12-117.76c33.565-31.289 87.04-28.444 118.33 5.12s28.444 86.471-5.12 117.76zm-56.32 368.64c-35.84 0-64.284 29.014-64.284 64.285 0 35.84 54.044 182.613 64.284 182.613s64.285-146.773 64.285-182.613c0-35.271-29.014-64.285-64.285-64.285z"></path>
+			</svg>
+		</div>
+		<div class="joe_action_item mode">
+			<svg class="icon-1 " viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="25" height="25">
+				<path d="M587.264 104.96c33.28 57.856 52.224 124.928 52.224 196.608 0 218.112-176.128 394.752-393.728 394.752-29.696 0-58.368-3.584-86.528-9.728C223.744 832.512 369.152 934.4 538.624 934.4c229.376 0 414.72-186.368 414.72-416.256 1.024-212.992-159.744-389.12-366.08-413.184z"></path>
+				<path d="M340.48 567.808l-23.552-70.144-70.144-23.552 70.144-23.552 23.552-70.144 23.552 70.144 70.144 23.552-70.144 23.552-23.552 70.144zM168.96 361.472l-30.208-91.136-91.648-30.208 91.136-30.208 30.72-91.648 30.208 91.136 91.136 30.208-91.136 30.208-30.208 91.648z"></path>
+			</svg>
+			<svg class="icon-2 active" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="25" height="25">
+				<path d="M234.24 512a277.76 277.76 0 1 0 555.52 0 277.76 277.76 0 1 0-555.52 0zM512 187.733a42.667 42.667 0 0 1-42.667-42.666v-102.4a42.667 42.667 0 0 1 85.334 0v102.826A42.667 42.667 0 0 1 512 187.733zm-258.987 107.52a42.667 42.667 0 0 1-29.866-12.373l-72.96-73.387a42.667 42.667 0 0 1 59.306-59.306l73.387 72.96a42.667 42.667 0 0 1 0 59.733 42.667 42.667 0 0 1-29.867 12.373zm-107.52 259.414H42.667a42.667 42.667 0 0 1 0-85.334h102.826a42.667 42.667 0 0 1 0 85.334zm34.134 331.946a42.667 42.667 0 0 1-29.44-72.106l72.96-73.387a42.667 42.667 0 0 1 59.733 59.733l-73.387 73.387a42.667 42.667 0 0 1-29.866 12.373zM512 1024a42.667 42.667 0 0 1-42.667-42.667V878.507a42.667 42.667 0 0 1 85.334 0v102.826A42.667 42.667 0 0 1 512 1024zm332.373-137.387a42.667 42.667 0 0 1-29.866-12.373l-73.387-73.387a42.667 42.667 0 0 1 0-59.733 42.667 42.667 0 0 1 59.733 0l72.96 73.387a42.667 42.667 0 0 1-29.44 72.106zm136.96-331.946H878.507a42.667 42.667 0 1 1 0-85.334h102.826a42.667 42.667 0 0 1 0 85.334zM770.987 295.253a42.667 42.667 0 0 1-29.867-12.373 42.667 42.667 0 0 1 0-59.733l73.387-72.96a42.667 42.667 0 1 1 59.306 59.306l-72.96 73.387a42.667 42.667 0 0 1-29.866 12.373z"></path>
+			</svg>
+		</div>
+	</div>
+
+	
+
+	
+
+	
+	<script src="https://hanzhongzi.github.io/js/highlight.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
+   
+
+   <script>
+	 function registerImageLoadEvent() {
+		const images = document.querySelectorAll('.sidebar img, .Qc_post img, .vendors-list img');
+				
+		const callback = (entries) => {
+			entries.forEach(item => {
+				if (item.intersectionRatio > 0) {
+					let ele = item.target;
+					let imgSrc = ele.getAttribute('src');
+					ele.setAttribute("src","1.png")
+					ele.setAttribute("data-lazy-src",imgSrc)
+					ele.classList.add("lazyload")
+			
+				}
+			})
+		};
+
+		Array.from(images).forEach(img => {
+			const bg = '/images/loading.gif'
+
+			img.setAttribute("data-lazy-src",img.src)
+			img.src = bg
+		})
+		
+	
+	}
+
+	registerImageLoadEvent()
+
+   </script>
+
+
+ <script src="https://hanzhongzi.github.io/js/lazyload.life.min.js"></script>
+
+ <script>
+	const lazyloadImg = () => {
+      window.lazyLoadInstance = new LazyLoad({
+        elements_selector: 'img',
+        threshold: 0,
+        data_src: 'lazy-src'
+      })
+    }
+
+	lazyloadImg()
+ </script>
+
+
+	</div>
+</body>
+
+
+
+</html>
+
+
+
+<script>
+	
+	var mybutton = document.querySelector(".joe_action .joe_action_item.scroll")
+    window.onscroll = function () {
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            
+            
+			mybutton.classList.add("active")
+        } else {
+            
+            
+			mybutton.classList.remove("active")
+        }
+    };
+
+	mybutton.addEventListener("click",() => {
+		document.documentElement.scrollTop = document.body.scrollTop = 0;
+	})
+	
+
+
+</script>
+
+
+
+<script>
+	var themeBtn = document.querySelector(".joe_action .joe_action_item.mode")
+	let icon_1 = document.querySelector(".joe_action .joe_action_item.mode .icon-1")
+	let icon_2 = document.querySelector(".joe_action .joe_action_item.mode .icon-2")
+    themeBtn.addEventListener("click", () => {
+		
+        if (icon_1.classList.contains("active")) {
+            icon_1.classList.remove('active');
+			icon_2.classList.add('active');
+			document.querySelector("html").removeAttribute("data-night")
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+			icon_2.classList.remove('active');
+			icon_1.classList.add('active');
+			document.querySelector("html").setAttribute("data-night","night")
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
