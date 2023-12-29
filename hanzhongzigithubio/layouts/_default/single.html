@@ -1,0 +1,22 @@
+{{- define "main" }}
+
+{{ $isComment := .Params.comment.enable | default .Site.Params.comments.enable }}
+{{ .Scratch.Set "isComment" $isComment }}
+<div class="Qc_main Qc_post">
+    <div class="Qc_detail">
+        <h1 class="title Qc_psot_title"> {{ .Title }}</h1>
+        <div class="Qc_detail_category"> </div>
+        <article class="Qc_detail_article" id="article-container">
+            {{ .Content }}
+        </article>
+    </div>
+
+    {{ if and .IsPage $isComment }}
+       	{{ partialCached "comments.html" . }}
+    {{ end }}
+</div>
+
+
+{{- end }}
+
+
