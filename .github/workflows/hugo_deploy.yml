@@ -33,6 +33,7 @@ jobs:
     - name: Copy public directory to public repository
       working-directory: ./source_code
       run: |
+        rm -rf ../public_repo/*
         pwd;ls -lha ;cp -aifR hanzhongzigithubio/public/* ../public_repo/
 
     - name: Use secret as part of a command
