@@ -49,7 +49,7 @@ jobs:
         git config user.name github-actions
         git config user.email github-actions@github.com
         git add .
-        git commit -m "Automated deployment: $(date +'%Y-%m-%d %H:%M:%S')"
+        git commit --allow-empty  -m "Automated deployment: $(date +'%Y-%m-%d %H:%M:%S')"
         git remote set-url origin https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/hanzhongzi/hanzhongzi.github.io.git
         git push origin main
 
