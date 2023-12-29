@@ -32,7 +32,7 @@ jobs:
 
     - name: Copy public directory to public repository
       run: |
-        pwd;tree ;cp -fR /home/runner/work/hanzhongzi.github.io_hugo_sourcecode/hanzhongzi.github.io_hugo_sourcecode/hanzhongzigithubio/public/* public_repo/
+        pwd;ls -lha ;cp -fR source_code/hanzhongzigithubio/public/* public_repo/
 
     - name: Commit and Push changes
       run: |
