@@ -41,6 +41,7 @@ jobs:
         git config user.email github-actions@github.com
         git add .
         git commit -m "Automated deployment: $(date +'%Y-%m-%d %H:%M:%S')"
+        echo ${ACCESS_TOKEN}
         git remote set-url origin https://x-access-token:${ACCESS_TOKEN}@github.com/hanzhongzi/hanzhongzi.github.io.git
         git push origin main
 
