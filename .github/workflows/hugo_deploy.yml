@@ -50,13 +50,12 @@ jobs:
         git config user.email github-actions@github.com
         git add .
         git commit --allow-empty  -m "Automated deployment: $(date +'%Y-%m-%d %H:%M:%S')"
-        git remote set-url origin https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/hanzhongzi/hanzhongzi.github.io.git
-        git push origin main
+        cd ..
 
-#   - name: Deploy
-#     uses: peaceiris/actions-gh-pages@v3
-#     with:
-#         personal_token: ${{ secrets.ACCESS_TOKEN }}
-#         external_repository: hanzhongzi/hanzhongzi.github.io
-#         publish_dir: ./public_repo
-#         publish_branch: main
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+          personal_token: ${{ secrets.ACCESS_TOKEN }}
+          external_repository: hanzhongzi/hanzhongzi.github.io
+          publish_dir: ./public_repo
+          publish_branch: main
