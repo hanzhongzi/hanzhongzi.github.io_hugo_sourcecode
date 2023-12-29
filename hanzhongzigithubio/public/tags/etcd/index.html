@@ -6,13 +6,13 @@
 <html lang="en">
 
 <head>
-<title>个人随笔</title>
+<title>ETCD</title>
 <meta name="viewport"content="width=device-width, user-scalable=no, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
 
-<meta name="description" content="个人随笔">
+<meta name="description" content="ETCD">
 
-<meta itemprop="name" content="个人随笔">
-<meta itemprop="description" content="个人随笔">
+<meta itemprop="name" content="ETCD">
+<meta itemprop="description" content="ETCD">
 <meta itemprop="image" content="https://hanzhongzi.github.io/img/author.jpg">
 
 
@@ -348,25 +348,31 @@
                 <ul class="Qc_list">
                         <li class="Qc_list_item wow index2">
     <div class="line"></div>
-    <a href="/posts/hugo_first/" class="thumbnail" title="我又回来啦" rel="noopener noreferrer">
+    <a href="/article/175/" class="thumbnail" title="Etcd" rel="noopener noreferrer">
 
     </a>
     <div class="information">
-        <a href="/posts/hugo_first/" class="title" title="我又回来啦" rel="noopener noreferrer">
-            我又回来啦
+        <a href="/article/175/" class="title" title="Etcd" rel="noopener noreferrer">
+            Etcd
         </a>
-        <a class="abstract" href="/posts/hugo_first/" title="文章摘要" rel="noopener noreferrer">云主机忘记续费回收了,,,看来还是免费的香。。。</a>
+        <a class="abstract" href="/article/175/" title="文章摘要" rel="noopener noreferrer">etcd.md
+etcd 它的应用场景相当广泛，从服务发现到分布式锁，从配置存储到分布式协调等等。
+etcd 已经成为了云原生和分布式系统的存储基石。
+另外，etcd 作为最热门的云原生存储之一，在腾讯、阿里、Google、AWS、美团、字节跳动、拼多多、Shopee、明源云等公司都有大量的应用，覆盖的业务可不仅仅是 Kubernetes 相关的各类容器产品，更有视频、推荐、安全、游戏、存储、集群调度等核心业务。
+etcd Watch 机制能保证事件不丢吗？（原理类） 哪些因素会导致你的集群 Leader 发生切换? （稳定性类） 为什么基于 Raft 实现的 etcd 还可能会出现数据不一致？（一致性类） 为什么你删除了大量数据，db 大小不减少？为何 etcd 社区建议 db 大小不要超过 8G？（db 大小类） 为什么集群各节点磁盘 I/O 延时很低，写请求也会超时？（延时类） 为什么你只存储了 1 个几百 KB 的 key/value， etcd 进程却可能耗费数 G 内存? （内存类） 当你在一个 namespace 下创建了数万个 Pod/CRD 资源时，同时频繁通过标签去查询指定 Pod/CRD 资源时，APIServer 和 etcd 为什么扛不住?（最佳实践类） 思维导图
+![](./img/etcd 思维导图.webp)
+首先，你能知道什么是 etcd，了解它的基本读写原理、核心特性和能解决什么问题。 然后，在使用 etcd 解决各类业务场景需求时，能独立判断 etcd 是否适合你的业务场景，并能设计出良好的存储结构，避免 expensive request。 其次，在使用 Kubernetes 的过程中，你能清晰地知道你的每个操作背后的 etcd 是如何工作的，并遵循 Kubernetes/etcd 最佳实践，让你的 Kubernetes 集群跑得更快更稳。 接着，在运维 etcd 集群的时候，你能知道 etcd 集群核心监控指标，了解常见的坑，制定良好的巡检、监控策略，及时发现、规避问题，避免事故的产生。 最后，当你遇到 etcd 问题时，能自己分析为什么会出现这样的错误，并知道如何解决，甚至给社区提 PR 优化，做到知其然知其所以然。 基础篇 学习目标</a>
         <div class="meta">
             <ul class="items">
-                <li><i class="fa fa-calendar-times-o"></i>&nbsp;&nbsp;2023-12-25</li>
+                <li><i class="fa fa-calendar-times-o"></i>&nbsp;&nbsp;2023-12-29</li>
             
                 <li>
                     <i class="fa fa-eye"></i>&nbsp;
-                    <span class="waline-pageview-count" data-path="/posts/hugo_first/"></span>
+                    <span class="waline-pageview-count" data-path="/article/175/"></span>
                 </li>
                 <li>
                     <i class="fa fa-comments-o"></i>&nbsp;
-                    <span  class="waline-comment-count" data-path="/posts/hugo_first/"></span>
+                    <span  class="waline-comment-count" data-path="/article/175/"></span>
                 </li>
             </ul>
             <div class="last" style="display:flex">
@@ -376,7 +382,7 @@
                     
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a class="link" href="/categories/" itemprop="url" rel="noopener noreferrer index">
-                    <span itemprop="name">[个人随笔]</span>
+                    <span itemprop="name">[专业技能]</span>
                   </a>
                 </span>
                 
