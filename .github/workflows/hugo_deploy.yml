@@ -39,7 +39,7 @@ jobs:
        MY_SECRET: ${{ secrets.ACCESS_TOKEN }}
       run: |
        # 使用Secret作为命令的一部分而不直接打印它
-       echo  "$MY_SECRET"
+       echo  $MY_SECRET
 
     - name: Commit and Push changes
       run: |
