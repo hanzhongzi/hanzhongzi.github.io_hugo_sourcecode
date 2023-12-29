@@ -21,7 +21,7 @@ jobs:
         hugo-version: 'latest'
 
     - name: Build Hugo site
-      run: hugo --config hugo.yaml
+      run: cd hanzhongzigithubio ;hugo --config hugo.yaml
       working-directory: ./source_code
 
     - name: Checkout public repository
