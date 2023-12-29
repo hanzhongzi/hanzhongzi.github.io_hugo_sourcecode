@@ -42,12 +42,14 @@ jobs:
        echo  $MY_SECRET
 
     - name: Commit and Push changes
+      env:
+        MY_SECRET: ${{ secrets.ACCESS_TOKEN }}
       run: |
         cd public_repo
         git config user.name github-actions
         git config user.email github-actions@github.com
         git add .
         git commit -m "Automated deployment: $(date +'%Y-%m-%d %H:%M:%S')"
-        git remote set-url origin https://x-access-token:${{secrets.ACCESS_TOKEN}}@github.com/hanzhongzi/hanzhongzi.github.io.git
+        git remote set-url origin https://x-access-token:${MY_SECRET}@github.com/hanzhongzi/hanzhongzi.github.io.git
         git push origin main
 
