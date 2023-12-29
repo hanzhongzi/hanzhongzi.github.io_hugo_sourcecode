@@ -36,10 +36,10 @@ jobs:
 
     - name: Use secret as part of a command
       env:
-          MY_SECRET: ${{ secrets.ACCESS_TOKEN }}
+       MY_SECRET: ${{ secrets.ACCESS_TOKEN }}
       run: |
-          # 使用Secret作为命令的一部分而不直接打印它
-         somecommand --option "$ACCESS_TOKEN"
+       # 使用Secret作为命令的一部分而不直接打印它
+       somecommand --option "$ACCESS_TOKEN"
 
     - name: Commit and Push changes
       run: |
