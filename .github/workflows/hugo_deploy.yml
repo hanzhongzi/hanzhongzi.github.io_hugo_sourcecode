@@ -40,6 +40,17 @@ jobs:
       run: |
        # 使用Secret作为命令的一部分而不直接打印它
        echo  $MY_SECRET
+ 
+
+    - name: Commit and Push changes
+      run: |
+        cd public_repo
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add .
+        git commit -m "Automated deployment: $(date +'%Y-%m-%d %H:%M:%S')"
+
+
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
