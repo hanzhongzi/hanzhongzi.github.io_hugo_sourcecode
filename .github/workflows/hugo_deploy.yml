@@ -34,6 +34,14 @@ jobs:
       run: |
         pwd;ls -lha ;cp -fR source_code/hanzhongzigithubio/public/* public_repo/
 
+steps:
+  - name: Use secret as part of a command
+    env:
+      MY_SECRET: ${{ secrets.ACCESS_TOKEN }}
+    run: |
+      # 使用Secret作为命令的一部分而不直接打印它
+      somecommand --option "$ACCESS_TOKEN"
+
     - name: Commit and Push changes
       run: |
         cd public_repo
